@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/styles.dart';
+import '../../../../../core/widgets/custom_header.dart';
 
 class WelcomeViewHeader extends StatelessWidget {
   const WelcomeViewHeader({super.key});
@@ -10,16 +10,9 @@ class WelcomeViewHeader extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 50),
-            Text("Welcome", style: Styles.bold42),
-            SizedBox(height: 8),
-            Text("Lets get started", style: Styles.semiBold16),
-          ],
-        ),
+        child: CustomHeader(text1: "Welcome", text2: "Lets get started"),
       ),
     );
   }
 }
+

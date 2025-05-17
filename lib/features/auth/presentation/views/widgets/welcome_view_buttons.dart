@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:food_delivery_admin/core/widgets/custom_button.dart';
 
+import '../../../../../core/utils/navigation.dart';
 import '../../../../../core/utils/styles.dart';
+import '../../../../../core/widgets/custom_button.dart';
+import '../login_view.dart';
 import 'welcome_create_account.dart';
 
 class WelcomeViewButtons extends StatelessWidget {
@@ -21,7 +23,8 @@ class WelcomeViewButtons extends StatelessWidget {
               const Text("Existing  customer / Get started",
                   style: Styles.semiBold16),
               const SizedBox(height: 12),
-              const CustomButton(),
+              CustomButton(
+                  onTap: () => Navigation.push(context, const LoginView())),
               const SizedBox(height: 32),
               const WelcomeCreateAccount(),
             ],
@@ -29,5 +32,3 @@ class WelcomeViewButtons extends StatelessWidget {
         ));
   }
 }
-
-

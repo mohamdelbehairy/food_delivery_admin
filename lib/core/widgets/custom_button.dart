@@ -3,12 +3,14 @@ import 'package:food_delivery_admin/core/utils/app_colors.dart';
 import 'package:food_delivery_admin/core/utils/styles.dart';
 
 class CustomButton extends StatelessWidget {
-  const CustomButton({super.key});
+  const CustomButton({super.key, this.buttonName, required this.onTap});
+  final String? buttonName;
+  final Function() onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         height: 48,
         width: double.infinity,
@@ -16,7 +18,7 @@ class CustomButton extends StatelessWidget {
             color: AppColors.primaryColor,
             borderRadius: BorderRadius.circular(8)),
         child: Center(
-          child: Text("Sign in",
+          child: Text(buttonName ?? "Sign in",
               style: Styles.semiBold16.copyWith(color: Colors.white)),
         ),
       ),
