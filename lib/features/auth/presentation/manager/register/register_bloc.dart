@@ -3,24 +3,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/model/text_field_model.dart';
-import '../../views/widgets/login_password_suffix_icon.dart';
+import '../../views/widgets/register_password_suffix_icon.dart';
 
-part 'login_event.dart';
-part 'login_state.dart';
+part 'register_event.dart';
+part 'register_state.dart';
 
-class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc() : super(LoginInitial()) {
+class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
+  RegisterBloc() : super(RegisterInitial()) {
     _listenToEmail();
-    on<LoginEvent>((event, emit) {
+    on<RegisterEvent>((event, emit) {
       if (event is ChangeVisibilityEvent) {
         changeVisibility = !changeVisibility;
         emit(ChangeVisibility());
       }
 
-      if (event is LoginButtonEvent) {
-        if (formKey.currentState!.validate()) {
-          formKey.currentState!.save();
+      if (event is RegisterButtonEvent) {
+        if (isPrivacy) {
+          if (formKey.currentState!.validate()) {
+            formKey.currentState!.save();
+          }
         }
+      }
+
+      if (event is ChangePrivacyEvent) {
+        isPrivacy = !isPrivacy;
+        emit(ChangePrivacyState());
       }
     });
 
@@ -41,13 +48,25 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   bool changeVisibility = false;
   bool isValidate = false;
-  
+  bool isPrivacy = false;
+
+  final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  List<TextFieldModel> loginItems() {
+  List<TextFieldModel> registerItems() {
     return [
+      TextFieldModel(
+          lable: "Name",
+          hintText: "Enter your name",
+          controller: _name,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter your name';
+            }
+            return null;
+          }),
       TextFieldModel(
           lable: "Email",
           hintText: "Enter your email",
@@ -57,6 +76,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
               ? Icon(Icons.done, size: 18, color: const Color(0xff34A353))
               : null,
           validator: (value) {
+            if (_name.text.isEmpty) return null;
             if (value == null || value.isEmpty) {
               return 'Please enter your email';
             }
@@ -70,9 +90,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           hintText: "Enter your password",
           controller: _password,
           obscureText: changeVisibility,
-          suffixIcon: LoginPasswordSuffixIcon(),
+          suffixIcon: RegisterPasswordSuffixIcon(),
           validator: (value) {
-            if (_email.text.isEmpty || !EmailValidator.validate(_email.text)) {
+            if (_name.text.isEmpty ||
+                _email.text.isEmpty ||
+                !EmailValidator.validate(_email.text)) {
               return null;
             }
             if (value == null || value.isEmpty) {
