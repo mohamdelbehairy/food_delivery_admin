@@ -50,7 +50,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     return [
       TextFieldModel(
           lable: "Email",
-          hintText: "Enter your email",
+          hintText: "Type something longer here...",
           controller: _email,
           keyboardType: TextInputType.emailAddress,
           suffixIcon: isValidate
@@ -67,7 +67,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           }),
       TextFieldModel(
           lable: "Password",
-          hintText: "Enter your password",
+          hintText: "Type something longer here...",
           controller: _password,
           obscureText: changeVisibility,
           suffixIcon: LoginPasswordSuffixIcon(),

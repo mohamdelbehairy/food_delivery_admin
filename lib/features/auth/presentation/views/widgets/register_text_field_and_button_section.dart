@@ -22,7 +22,9 @@ class RegisterTextFieldAndButtonSection extends StatelessWidget {
               const SizedBox(height: 24),
               RegisterAgreeAndPrivacyBox(),
               const SizedBox(height: 24),
-              CustomButton(onTap: () => register.add(RegisterButtonEvent())),
+              CustomButton(
+                  buttonName: "Sign up",
+                  onTap: () => register.add(RegisterButtonEvent())),
             ],
           ),
         );

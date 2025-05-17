@@ -22,7 +22,7 @@ class CustomTextField extends StatelessWidget {
           filled: true,
           fillColor: const Color(0xffF5F5F5),
           hintText: textFieldModel.hintText,
-          hintStyle: Styles.semiBold14.copyWith(color: Colors.grey),
+          hintStyle: Styles.mediumItalic16,
           border: Helper.buildBorder(),
           enabledBorder: Helper.buildBorder(),
           focusedBorder: Helper.buildBorder(),

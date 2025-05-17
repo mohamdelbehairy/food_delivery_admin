@@ -59,7 +59,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     return [
       TextFieldModel(
           lable: "Name",
-          hintText: "Enter your name",
+          hintText: "Type something longer here...",
           controller: _name,
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -69,7 +69,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           }),
       TextFieldModel(
           lable: "Email",
-          hintText: "Enter your email",
+          hintText: "Type something longer here...",
           controller: _email,
           keyboardType: TextInputType.emailAddress,
           suffixIcon: isValidate
@@ -87,7 +87,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           }),
       TextFieldModel(
           lable: "Password",
-          hintText: "Enter your password",
+          hintText: "Type something longer here...",
           controller: _password,
           obscureText: changeVisibility,
           suffixIcon: RegisterPasswordSuffixIcon(),

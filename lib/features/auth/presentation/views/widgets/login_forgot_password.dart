@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/utils/navigation.dart';
 import '../../../../../core/utils/styles.dart';
+import '../forgot_password_view.dart';
 
 class LoginForgotPassword extends StatelessWidget {
   const LoginForgotPassword({super.key});
@@ -9,8 +11,11 @@ class LoginForgotPassword extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
       alignment: AlignmentDirectional.centerEnd,
-      child: Text("Forgot password?",
-          style: Styles.semiBold14.copyWith(color: const Color(0xffF78720))),
+      child: GestureDetector(
+        onTap: () => Navigation.push(context, const ForgotPasswordView()),
+        child: Text("Forgot password?",
+            style: Styles.semiBold14.copyWith(color: const Color(0xffF78720))),
+      ),
     );
   }
 }
