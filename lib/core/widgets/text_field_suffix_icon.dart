@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../features/auth/presentation/manager/auth/auth_bloc.dart';
+import '../../features/auth/presentation/manager/login/login_bloc.dart';
 import '../utils/app_colors.dart';
 
 class ForgotPasswordSuffixIcon extends StatelessWidget {
@@ -9,7 +9,7 @@ class ForgotPasswordSuffixIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final auth = context.read<AuthBloc>();
+    final auth = context.read<LoginBloc>();
     return GestureDetector(
       onTap: () => auth.add(ChangeVisibilityEvent()),
       child: Icon(

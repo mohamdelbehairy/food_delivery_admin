@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/widgets/custom_button.dart';
-import '../../manager/auth/auth_bloc.dart';
+import '../../manager/login/login_bloc.dart';
 import 'login_forgot_password.dart';
 import 'login_list_view.dart';
 
@@ -11,18 +11,18 @@ class LoginTextFieldAndButtonSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final auth = context.read<AuthBloc>();
-    return BlocBuilder<AuthBloc, AuthState>(
+    final auth = context.read<LoginBloc>();
+    return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
         return Form(
-          key: auth.loginFormKey,
+          key: auth.formKey,
           child: Column(
             children: [
               LoginListView(),
               const SizedBox(height: 16),
               const LoginForgotPassword(),
               const SizedBox(height: 24),
-              CustomButton(onTap: () => auth.add(LoginEvent())),
+              CustomButton(onTap: () => auth.add(LoginButtonEvent())),
             ],
           ),
         );

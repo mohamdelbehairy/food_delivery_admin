@@ -5,21 +5,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/model/text_field_model.dart';
 import '../../../../../core/widgets/text_field_suffix_icon.dart';
 
-part 'auth_event.dart';
-part 'auth_state.dart';
+part 'login_event.dart';
+part 'login_state.dart';
 
-class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(AuthInitial()) {
-    _listenToEmailLogin();
-    on<AuthEvent>((event, emit) {
+class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  LoginBloc() : super(LoginInitial()) {
+    _listenToEmail();
+    on<LoginEvent>((event, emit) {
       if (event is ChangeVisibilityEvent) {
         changeVisibility = !changeVisibility;
         emit(ChangeVisibility());
       }
 
-      if (event is LoginEvent) {
-        if (loginFormKey.currentState!.validate()) {
-          loginFormKey.currentState!.save();
+      if (event is LoginButtonEvent) {
+        if (formKey.currentState!.validate()) {
+          formKey.currentState!.save();
         }
       }
     });
@@ -28,30 +28,29 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final currentValidation = EmailValidator.validate(event.email);
       if (currentValidation != isValidate) {
         isValidate = currentValidation;
-        emit(ChangeEmail());
+        emit(ChangeEmailState());
       }
     });
   }
 
-  void _listenToEmailLogin() {
-    _emailLogin.addListener(() {
-      add(ChangeEmailEvent(_emailLogin.text));
+  void _listenToEmail() {
+    _email.addListener(() {
+      add(ChangeEmailEvent(_email.text));
     });
   }
 
-  // login view
   bool changeVisibility = false;
   bool isValidate = false;
-  final TextEditingController _emailLogin = TextEditingController();
-  final TextEditingController _passwordLogin = TextEditingController();
-  GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   List<TextFieldModel> loginTextFields() {
     return [
       TextFieldModel(
           lable: "Email",
           hintText: "Enter your email",
-          controller: _emailLogin,
+          controller: _email,
           keyboardType: TextInputType.emailAddress,
           suffixIcon: isValidate
               ? Icon(Icons.done, size: 18, color: const Color(0xff34A353))
@@ -68,12 +67,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       TextFieldModel(
           lable: "Password",
           hintText: "Enter your password",
-          controller: _passwordLogin,
+          controller: _password,
           obscureText: changeVisibility,
           suffixIcon: ForgotPasswordSuffixIcon(),
           validator: (value) {
-            if (_emailLogin.text.isEmpty ||
-                !EmailValidator.validate(_emailLogin.text)) {
+            if (_email.text.isEmpty || !EmailValidator.validate(_email.text)) {
               return null;
             }
             if (value == null || value.isEmpty) {
@@ -89,8 +87,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   @override
   Future<void> close() {
-    _emailLogin.dispose();
-    _passwordLogin.dispose();
+    _email.dispose();
+    _password.dispose();
     return super.close();
   }
 }
