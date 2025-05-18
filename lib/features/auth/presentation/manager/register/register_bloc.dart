@@ -4,10 +4,12 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_delivery_admin/core/utils/constants.dart';
-import 'package:food_delivery_admin/features/auth/presentation/views/widgets/email_suffix_icon.dart';
 
 import '../../../../../core/model/text_field_model.dart';
+import '../../../../user_data/data/model/user_data_model.dart';
+import '../../../../user_data/data/repo/user_data_repo.dart';
 import '../../../data/repo/auth_repo.dart';
+import '../../views/widgets/email_suffix_icon.dart';
 import '../../views/widgets/register_password_suffix_icon.dart';
 
 part 'register_event.dart';
@@ -15,7 +17,8 @@ part 'register_state.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   final AuthRepo _authRepo;
-  RegisterBloc(this._authRepo) : super(RegisterInitial()) {
+  final UserDataRepo _userDataRepo;
+  RegisterBloc(this._authRepo, this._userDataRepo) : super(RegisterInitial()) {
     _listenToEmail();
     on<RegisterEvent>((event, emit) async {
       if (event is ChangeVisibilityEvent) {
@@ -29,8 +32,15 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           if (isPrivacy) {
             isLoading = true;
             emit(RegisterLoading());
-            await _authRepo.register(_email.text, _password.text).then((value) {
+            await _authRepo
+                .register(_email.text, _password.text)
+                .then((value) async {
               if (value != null) {
+                await _userDataRepo.addUserData(UserDataModel(
+                    userName: _name.text,
+                    userID: value.uid,
+                    userEmail: _email.text,
+                    userRole: Constants.admin));
                 isLoading = false;
                 emit(RegisterSuccess());
               }

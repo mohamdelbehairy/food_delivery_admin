@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_delivery_admin/core/utils/constants.dart';
 import 'package:food_delivery_admin/core/utils/helper.dart';
+import 'package:food_delivery_admin/features/user_data/data/repo/user_data_repo.dart';
 
 import '../../../../../core/model/text_field_model.dart';
 import '../../../../../core/utils/service/shared_pref_service.dart';
@@ -18,8 +19,10 @@ part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthRepo _authRepo;
+  final UserDataRepo _userDataRepo;
   final SharedPrefService _sharedPrefService;
-  LoginBloc(this._authRepo, this._sharedPrefService) : super(LoginInitial()) {
+  LoginBloc(this._authRepo, this._sharedPrefService, this._userDataRepo)
+      : super(LoginInitial()) {
     _listenToEmail();
     on<LoginEvent>((event, emit) async {
       if (event is ChangeVisibilityEvent) {
@@ -36,10 +39,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
               .login(_email.text, _password.text)
               .then((value) async {
             if (value != null) {
-              await _sharedPrefService.setString(Constants.userID,
-                  Helper.getIt.get<FirebaseAuth>().currentUser!.uid);
-              isLoading = false;
-              emit(LoginSuccess());
+              final userData = await _userDataRepo.getFutureUserData();
+              if (userData.userRole == Constants.admin) {
+                await _sharedPrefService.setString(Constants.userID,
+                    Helper.getIt.get<FirebaseAuth>().currentUser!.uid);
+                isLoading = false;
+                emit(LoginSuccess());
+              } else {
+                isLoading = false;
+                emit(LoginFailure(Constants.notAdmin));
+              }
             }
           }).catchError((error) {
             log("error from login: $error");

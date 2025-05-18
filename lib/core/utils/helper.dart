@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_admin/core/utils/service/shared_pref_service.dart';
+import 'package:food_delivery_admin/features/user_data/data/repo/user_data_repo_impl.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,10 +19,18 @@ abstract class Helper {
   // getIt service locator
   static final getIt = GetIt.instance;
   static Future<void> setupLocator() async {
+    // firebase
     getIt.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
+    getIt.registerLazySingleton<FirebaseFirestore>(
+        () => FirebaseFirestore.instance);
+
     getIt.registerSingleton<AuthRepoImpl>(
         AuthRepoImpl(getIt.get<FirebaseAuth>()));
 
+    getIt.registerSingleton<UserDataRepoImpl>(
+        UserDataRepoImpl(getIt.get<FirebaseFirestore>()));
+
+    // shared pref
     getIt.registerLazySingletonAsync<SharedPreferences>(
         () => SharedPreferences.getInstance());
     await getIt.isReady<SharedPreferences>();
