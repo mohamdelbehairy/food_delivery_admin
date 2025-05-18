@@ -22,4 +22,12 @@ abstract class Styles {
       fontWeight: FontWeight.w600,
       fontFamily: "PlusJakartaSans",
       color: AppColors.blackColor);
+
+  //mediu
+  static const mediumItalic16 = TextStyle(
+      fontSize: 16,
+      fontStyle: FontStyle.italic,
+      fontWeight: FontWeight.w500,
+      fontFamily: "PlusJakartaSans",
+      color: AppColors.blackColor);
 }
