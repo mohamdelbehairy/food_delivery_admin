@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_admin/core/utils/service/shared_pref_service.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/auth/data/repo/auth_repo_impl.dart';
 
@@ -14,10 +16,17 @@ abstract class Helper {
 
   // getIt service locator
   static final getIt = GetIt.instance;
-  static void setupLocator() {
+  static Future<void> setupLocator() async {
     getIt.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
     getIt.registerSingleton<AuthRepoImpl>(
         AuthRepoImpl(getIt.get<FirebaseAuth>()));
+
+    getIt.registerLazySingletonAsync<SharedPreferences>(
+        () => SharedPreferences.getInstance());
+    await getIt.isReady<SharedPreferences>();
+
+    getIt.registerSingleton<SharedPrefService>(
+        SharedPrefService(getIt.get<SharedPreferences>()));
   }
 
   static void customSnackBar(BuildContext context, {required String message}) {

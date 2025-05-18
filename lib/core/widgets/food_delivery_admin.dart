@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../features/auth/presentation/views/welcome_view.dart';
+import '../utils/material_app_home.dart';
 
 class FoodDeliveryAdmin extends StatelessWidget {
   const FoodDeliveryAdmin({super.key});
@@ -9,7 +9,7 @@ class FoodDeliveryAdmin extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const WelcomeView(),
+      home: materialAppHome(),
     );
   }
 }

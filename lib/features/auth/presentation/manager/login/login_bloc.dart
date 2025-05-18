@@ -1,11 +1,14 @@
 import 'dart:developer';
 
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_delivery_admin/core/utils/constants.dart';
+import 'package:food_delivery_admin/core/utils/helper.dart';
 
 import '../../../../../core/model/text_field_model.dart';
+import '../../../../../core/utils/service/shared_pref_service.dart';
 import '../../../data/repo/auth_repo.dart';
 import '../../views/widgets/email_suffix_icon.dart';
 import '../../views/widgets/login_password_suffix_icon.dart';
@@ -15,7 +18,8 @@ part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthRepo _authRepo;
-  LoginBloc(this._authRepo) : super(LoginInitial()) {
+  final SharedPrefService _sharedPrefService;
+  LoginBloc(this._authRepo, this._sharedPrefService) : super(LoginInitial()) {
     _listenToEmail();
     on<LoginEvent>((event, emit) async {
       if (event is ChangeVisibilityEvent) {
@@ -28,8 +32,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           formKey.currentState!.save();
           isLoading = true;
           emit(LoginLoading());
-          await _authRepo.login(_email.text, _password.text).then((value) {
+          await _authRepo
+              .login(_email.text, _password.text)
+              .then((value) async {
             if (value != null) {
+              await _sharedPrefService.setString(Constants.userID,
+                  Helper.getIt.get<FirebaseAuth>().currentUser!.uid);
               isLoading = false;
               emit(LoginSuccess());
             }
@@ -114,4 +122,3 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     return super.close();
   }
 }
-

@@ -12,7 +12,7 @@ Future<void> initMain() async {
   Bloc.observer = BlocObserv();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  Helper.setupLocator();
+  await Helper.setupLocator();
 
   runApp(const FoodDeliveryAdmin());
 }
