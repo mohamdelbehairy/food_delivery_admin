@@ -1,8 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../features/auth/data/repo/auth_repo_impl.dart';
-import 'service/firebase_service.dart';
 
 abstract class Helper {
   static OutlineInputBorder buildBorder() {
@@ -15,9 +15,9 @@ abstract class Helper {
   // getIt service locator
   static final getIt = GetIt.instance;
   static void setupLocator() {
-    getIt.registerSingleton<FirebaseService>(FirebaseService());
+    getIt.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
     getIt.registerSingleton<AuthRepoImpl>(
-        AuthRepoImpl(getIt.get<FirebaseService>()));
+        AuthRepoImpl(getIt.get<FirebaseAuth>()));
   }
 
   static void customSnackBar(BuildContext context, {required String message}) {

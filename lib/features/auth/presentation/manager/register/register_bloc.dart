@@ -4,6 +4,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_delivery_admin/core/utils/constants.dart';
+import 'package:food_delivery_admin/features/auth/presentation/views/widgets/email_suffix_icon.dart';
 
 import '../../../../../core/model/text_field_model.dart';
 import '../../../data/repo/auth_repo.dart';
@@ -94,9 +95,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           hintText: "Type something longer here...",
           controller: _email,
           keyboardType: TextInputType.emailAddress,
-          suffixIcon: _isValidate
-              ? Icon(Icons.done, size: 18, color: const Color(0xff34A353))
-              : null,
+          suffixIcon: _isValidate ? const EmailSuffixIcon() : null,
           validator: (value) {
             if (_name.text.isEmpty) return null;
             if (value == null || value.isEmpty) {

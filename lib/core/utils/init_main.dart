@@ -10,9 +10,9 @@ import 'firebase_options.dart';
 Future<void> initMain() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = BlocObserv();
-  Helper.setupLocator();
-  
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  Helper.setupLocator();
 
   runApp(const FoodDeliveryAdmin());
 }

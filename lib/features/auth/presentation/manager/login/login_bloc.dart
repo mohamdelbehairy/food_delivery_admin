@@ -7,6 +7,7 @@ import 'package:food_delivery_admin/core/utils/constants.dart';
 
 import '../../../../../core/model/text_field_model.dart';
 import '../../../data/repo/auth_repo.dart';
+import '../../views/widgets/email_suffix_icon.dart';
 import '../../views/widgets/login_password_suffix_icon.dart';
 
 part 'login_event.dart';
@@ -47,8 +48,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     on<ChangeEmailEvent>((event, emit) {
       final currentValidation = EmailValidator.validate(event.email);
-      if (currentValidation != isValidate) {
-        isValidate = currentValidation;
+      if (currentValidation != _isValidate) {
+        _isValidate = currentValidation;
         emit(ChangeEmailState());
       }
     });
@@ -61,7 +62,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   bool changeVisibility = false;
-  bool isValidate = false;
+  bool _isValidate = false;
   bool isLoading = false;
 
   final TextEditingController _email = TextEditingController();
@@ -75,9 +76,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           hintText: "Type something longer here...",
           controller: _email,
           keyboardType: TextInputType.emailAddress,
-          suffixIcon: isValidate
-              ? Icon(Icons.done, size: 18, color: const Color(0xff34A353))
-              : null,
+          suffixIcon: _isValidate ? const EmailSuffixIcon() : null,
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter your email';
@@ -115,3 +114,4 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     return super.close();
   }
 }
+
