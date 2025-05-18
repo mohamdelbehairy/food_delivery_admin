@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_delivery_admin/core/model/button_model.dart';
 
 import '../../../../../core/widgets/custom_button.dart';
 import '../../manager/register/register_bloc.dart';
@@ -23,8 +24,11 @@ class RegisterTextFieldAndButtonSection extends StatelessWidget {
               RegisterAgreeAndPrivacyBox(),
               const SizedBox(height: 24),
               CustomButton(
-                  buttonName: "Sign up",
-                  onTap: () => register.add(RegisterButtonEvent())),
+                  buttonModel: ButtonModel(
+                buttonName: "Sign up",
+                isLoading: register.isLoading,
+                onTap: () => register.add(RegisterButtonEvent()),
+              )),
             ],
           ),
         );

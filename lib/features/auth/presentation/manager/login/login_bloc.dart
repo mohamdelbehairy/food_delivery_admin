@@ -1,17 +1,22 @@
+import 'dart:developer';
+
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_delivery_admin/core/utils/constants.dart';
 
 import '../../../../../core/model/text_field_model.dart';
+import '../../../data/repo/auth_repo.dart';
 import '../../views/widgets/login_password_suffix_icon.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc() : super(LoginInitial()) {
+  final AuthRepo _authRepo;
+  LoginBloc(this._authRepo) : super(LoginInitial()) {
     _listenToEmail();
-    on<LoginEvent>((event, emit) {
+    on<LoginEvent>((event, emit) async {
       if (event is ChangeVisibilityEvent) {
         changeVisibility = !changeVisibility;
         emit(ChangeVisibility());
@@ -20,6 +25,22 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       if (event is LoginButtonEvent) {
         if (formKey.currentState!.validate()) {
           formKey.currentState!.save();
+          isLoading = true;
+          emit(LoginLoading());
+          await _authRepo.login(_email.text, _password.text).then((value) {
+            if (value != null) {
+              isLoading = false;
+              emit(LoginSuccess());
+            }
+          }).catchError((error) {
+            log("error from login: $error");
+            isLoading = false;
+            if (error.code == Constants.invalidCredential) {
+              emit(LoginFailure(Constants.invalidCredential));
+            } else {
+              emit(LoginFailure(error.code));
+            }
+          });
         }
       }
     });
@@ -41,7 +62,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   bool changeVisibility = false;
   bool isValidate = false;
-  
+  bool isLoading = false;
+
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();

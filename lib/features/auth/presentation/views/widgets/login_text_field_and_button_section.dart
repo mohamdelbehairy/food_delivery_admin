@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_delivery_admin/core/model/button_model.dart';
 
 import '../../../../../core/widgets/custom_button.dart';
 import '../../manager/login/login_bloc.dart';
@@ -22,7 +23,10 @@ class LoginTextFieldAndButtonSection extends StatelessWidget {
               const SizedBox(height: 16),
               const LoginForgotPassword(),
               const SizedBox(height: 24),
-              CustomButton(onTap: () => login.add(LoginButtonEvent())),
+              CustomButton(
+                  buttonModel: ButtonModel(
+                      isLoading: login.isLoading,
+                      onTap: () => login.add(LoginButtonEvent()))),
             ],
           ),
         );

@@ -1,26 +1,47 @@
+import 'dart:developer';
+
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_delivery_admin/core/utils/constants.dart';
 
 import '../../../../../core/model/text_field_model.dart';
+import '../../../data/repo/auth_repo.dart';
 import '../../views/widgets/register_password_suffix_icon.dart';
 
 part 'register_event.dart';
 part 'register_state.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
-  RegisterBloc() : super(RegisterInitial()) {
+  final AuthRepo _authRepo;
+  RegisterBloc(this._authRepo) : super(RegisterInitial()) {
     _listenToEmail();
-    on<RegisterEvent>((event, emit) {
+    on<RegisterEvent>((event, emit) async {
       if (event is ChangeVisibilityEvent) {
         changeVisibility = !changeVisibility;
         emit(ChangeVisibility());
       }
 
       if (event is RegisterButtonEvent) {
-        if (isPrivacy) {
-          if (formKey.currentState!.validate()) {
-            formKey.currentState!.save();
+        if (formKey.currentState!.validate()) {
+          formKey.currentState!.save();
+          if (isPrivacy) {
+            isLoading = true;
+            emit(RegisterLoading());
+            await _authRepo.register(_email.text, _password.text).then((value) {
+              if (value != null) {
+                isLoading = false;
+                emit(RegisterSuccess());
+              }
+            }).catchError((error) {
+              log("error from register: $error");
+              isLoading = false;
+              if (error.code == Constants.emailAlreadyInUse) {
+                emit(RegisterFailure(Constants.emailAlreadyInUse));
+              } else {
+                emit(RegisterFailure(error.code));
+              }
+            });
           }
         }
       }
@@ -33,8 +54,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
     on<ChangeEmailEvent>((event, emit) {
       final currentValidation = EmailValidator.validate(event.email);
-      if (currentValidation != isValidate) {
-        isValidate = currentValidation;
+      if (currentValidation != _isValidate) {
+        _isValidate = currentValidation;
         emit(ChangeEmailState());
       }
     });
@@ -47,8 +68,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   }
 
   bool changeVisibility = false;
-  bool isValidate = false;
+  bool _isValidate = false;
   bool isPrivacy = false;
+  bool isLoading = false;
 
   final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
@@ -72,7 +94,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           hintText: "Type something longer here...",
           controller: _email,
           keyboardType: TextInputType.emailAddress,
-          suffixIcon: isValidate
+          suffixIcon: _isValidate
               ? Icon(Icons.done, size: 18, color: const Color(0xff34A353))
               : null,
           validator: (value) {
@@ -110,6 +132,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   @override
   Future<void> close() {
+    _name.dispose();
     _email.dispose();
     _password.dispose();
     return super.close();
