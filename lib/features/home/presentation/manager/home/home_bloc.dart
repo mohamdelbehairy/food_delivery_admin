@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_delivery_admin/core/utils/assets.dart';
-import 'package:food_delivery_admin/features/home/data/model/bottom_nav_model.dart';
 
+import '../../../../../core/utils/assets.dart';
 import '../../../../chat/presentation/views/chat_view.dart';
+import '../../../data/model/bottom_nav_model.dart';
+import '../../views/main_home_view.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
@@ -25,7 +26,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ];
 
   List<Widget> views = const [
-    Scaffold(),
+    MainHomeView(),
     ChatView(),
   ];
 }

@@ -26,13 +26,29 @@ class Assets {
   /// assets/images/home.svg
   static const String imagesHome = "assets/images/home.svg";
 
+  /// Assets for imagesHomeHeader
+  /// assets/images/home_header.png
+  static const String imagesHomeHeader = "assets/images/home_header.png";
+
   /// Assets for imagesImage
   /// assets/images/Image.png
   static const String imagesImage = "assets/images/Image.png";
 
+  /// Assets for imagesLocation
+  /// assets/images/location.svg
+  static const String imagesLocation = "assets/images/location.svg";
+
+  /// Assets for imagesNotification
+  /// assets/images/notification.svg
+  static const String imagesNotification = "assets/images/notification.svg";
+
   /// Assets for imagesR
   /// assets/images/R.png
   static const String imagesR = "assets/images/R.png";
+
+  /// Assets for imagesSearch
+  /// assets/images/search.svg
+  static const String imagesSearch = "assets/images/search.svg";
 
   /// Assets for imagesSend
   /// assets/images/send.svg

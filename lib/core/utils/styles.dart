@@ -23,6 +23,12 @@ abstract class Styles {
       fontFamily: "PlusJakartaSans",
       color: AppColors.blackColor);
 
+  static const semiBold32 = TextStyle(
+      fontSize: 32,
+      fontWeight: FontWeight.w600,
+      fontFamily: "PlusJakartaSans",
+      color: Colors.white);
+
   //medium
   static const mediumItalic16 = TextStyle(
       fontSize: 16,
@@ -42,4 +48,11 @@ abstract class Styles {
       fontWeight: FontWeight.w500,
       fontFamily: "PlusJakartaSans",
       color: Color(0xff878787));
+
+  // regular
+  static const regular14 = TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+      fontFamily: "PlusJakartaSans",
+      color: Colors.white);
 }
