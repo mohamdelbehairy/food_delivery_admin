@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/utils/navigation.dart';
+import '../message_view.dart';
 import 'chat_item.dart';
 
 class ChatListView extends StatelessWidget {
@@ -13,7 +15,8 @@ class ChatListView extends StatelessWidget {
         physics: const BouncingScrollPhysics(),
         itemBuilder: (context, index) => Padding(
           padding: EdgeInsets.only(bottom: 16),
-          child: ChatItem(),
+          child: ChatItem(
+              onTap: () => Navigation.push(context, const MessageView())),
         ),
       ),
     );

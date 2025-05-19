@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TextFieldModel {
-  final String lable;
-  final String? hintText;
+  final String? lable, hintText;
   final TextEditingController? controller;
   final Widget? suffixIcon;
   final bool obscureText;
@@ -10,7 +9,7 @@ class TextFieldModel {
   final String? Function(String?)? validator;
 
   TextFieldModel(
-      {required this.lable,
+      {this.lable,
       this.hintText,
       this.controller,
       this.suffixIcon,

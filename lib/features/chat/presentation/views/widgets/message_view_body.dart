@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
 import 'chat_background.dart';
-import 'chat_view_components.dart';
+import 'message_view_components.dart';
 
-class ChatViewBody extends StatelessWidget {
-  const ChatViewBody({super.key});
+class MessageViewBody extends StatelessWidget {
+  const MessageViewBody({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         const ChatBackground(),
-        const ChatViewComponents(),
+        const MessageViewComponents(),
       ],
     );
   }

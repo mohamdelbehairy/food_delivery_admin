@@ -13,7 +13,7 @@ class AuthTextFieldSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(textFieldModel.lable, style: Styles.semiBold14),
+        Text(textFieldModel.lable!, style: Styles.semiBold14),
         const SizedBox(height: 8),
         CustomTextField(textFieldModel: textFieldModel),
       ],
