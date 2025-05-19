@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_delivery_admin/core/utils/assets.dart';
 import 'package:food_delivery_admin/features/home/data/model/bottom_nav_model.dart';
 
+import '../../../../chat/presentation/views/chat_view.dart';
+
 part 'home_event.dart';
 part 'home_state.dart';
 
@@ -22,8 +24,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     BottomNavModel(image: Assets.imagesChat, index: 1, lable: "Chat"),
   ];
 
-  List<Widget> views = [
+  List<Widget> views = const [
     Scaffold(),
-    Scaffold(),
+    ChatView(),
   ];
 }

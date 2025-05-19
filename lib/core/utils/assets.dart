@@ -6,9 +6,21 @@ class Assets {
   /// assets/images/chat.svg
   static const String imagesChat = "assets/images/chat.svg";
 
+  /// Assets for imagesChatBackground
+  /// assets/images/chat_background.png
+  static const String imagesChatBackground = "assets/images/chat_background.png";
+
+  /// Assets for imagesDoubleCheck
+  /// assets/images/double_check.svg
+  static const String imagesDoubleCheck = "assets/images/double_check.svg";
+
   /// Assets for imagesHome
   /// assets/images/home.svg
   static const String imagesHome = "assets/images/home.svg";
+
+  /// Assets for imagesImage
+  /// assets/images/Image.png
+  static const String imagesImage = "assets/images/Image.png";
 
   /// Assets for imagesR
   /// assets/images/R.png

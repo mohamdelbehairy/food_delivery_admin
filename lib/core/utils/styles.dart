@@ -36,4 +36,10 @@ abstract class Styles {
       fontWeight: FontWeight.w500,
       fontFamily: "PlusJakartaSans",
       color: AppColors.primaryColor);
+
+  static const medium12 = TextStyle(
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+      fontFamily: "PlusJakartaSans",
+      color: Color(0xff878787));
 }
