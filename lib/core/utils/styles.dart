@@ -49,6 +49,13 @@ abstract class Styles {
       fontFamily: "PlusJakartaSans",
       color: Color(0xff878787));
 
+  static const mediumItalic14 = TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      fontStyle: FontStyle.italic,
+      fontFamily: "PlusJakartaSans",
+      color: Color(0xff878787));
+
   // regular
   static const regular14 = TextStyle(
       fontSize: 14,
