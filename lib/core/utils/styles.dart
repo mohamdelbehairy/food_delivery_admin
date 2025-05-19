@@ -23,11 +23,17 @@ abstract class Styles {
       fontFamily: "PlusJakartaSans",
       color: AppColors.blackColor);
 
-  //mediu
+  //medium
   static const mediumItalic16 = TextStyle(
       fontSize: 16,
       fontStyle: FontStyle.italic,
       fontWeight: FontWeight.w500,
       fontFamily: "PlusJakartaSans",
       color: AppColors.blackColor);
+
+  static const medium10 = TextStyle(
+      fontSize: 10,
+      fontWeight: FontWeight.w500,
+      fontFamily: "PlusJakartaSans",
+      color: AppColors.primaryColor);
 }
