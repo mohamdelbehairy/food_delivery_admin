@@ -6,6 +6,10 @@ class Assets {
   /// assets/images/arrow_back.svg
   static const String imagesArrowBack = "assets/images/arrow_back.svg";
 
+  /// Assets for imagesBurger
+  /// assets/images/burger.png
+  static const String imagesBurger = "assets/images/burger.png";
+
   /// Assets for imagesCall
   /// assets/images/call.svg
   static const String imagesCall = "assets/images/call.svg";
@@ -21,6 +25,10 @@ class Assets {
   /// Assets for imagesDoubleCheck
   /// assets/images/double_check.svg
   static const String imagesDoubleCheck = "assets/images/double_check.svg";
+
+  /// Assets for imagesDrink
+  /// assets/images/drink.png
+  static const String imagesDrink = "assets/images/drink.png";
 
   /// Assets for imagesHome
   /// assets/images/home.svg
@@ -42,6 +50,10 @@ class Assets {
   /// assets/images/notification.svg
   static const String imagesNotification = "assets/images/notification.svg";
 
+  /// Assets for imagesPizza
+  /// assets/images/pizza.png
+  static const String imagesPizza = "assets/images/pizza.png";
+
   /// Assets for imagesR
   /// assets/images/R.png
   static const String imagesR = "assets/images/R.png";
@@ -53,6 +65,10 @@ class Assets {
   /// Assets for imagesSend
   /// assets/images/send.svg
   static const String imagesSend = "assets/images/send.svg";
+
+  /// Assets for imagesTaco
+  /// assets/images/taco.png
+  static const String imagesTaco = "assets/images/taco.png";
 
   /// Assets for imagesX
   /// assets/images/X.png

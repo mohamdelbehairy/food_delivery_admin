@@ -15,4 +15,3 @@ class MainHomeText extends StatelessWidget {
     );
   }
 }
-

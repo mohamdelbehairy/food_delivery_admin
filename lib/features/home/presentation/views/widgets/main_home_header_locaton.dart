@@ -11,6 +11,7 @@ class MainHomeHeaderLocation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
+        // top: 12 + 12,
         left: 24,
         child: SafeArea(
             child: Column(

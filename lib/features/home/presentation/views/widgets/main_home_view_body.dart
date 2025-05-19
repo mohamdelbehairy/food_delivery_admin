@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'main_home_view_components.dart';
 import 'main_home_view_header.dart';
 
 class MainHomeViewBody extends StatelessWidget {
@@ -7,9 +8,11 @@ class MainHomeViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       children: [
-        const MainHomeViewHeader(),
+        MainHomeViewHeader(),
+        SizedBox(height: 24),
+        MainHomeViewComponents(),
       ],
     );
   }

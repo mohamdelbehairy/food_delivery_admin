@@ -7,3 +7,9 @@ final class ChangeBottomNavEvent extends HomeEvent {
 
   ChangeBottomNavEvent(this.index);
 }
+
+final class ChangeCategoryEvent extends HomeEvent {
+  final int index;
+
+  ChangeCategoryEvent(this.index);
+}

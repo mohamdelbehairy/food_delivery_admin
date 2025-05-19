@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/utils/assets.dart';
 import '../../../../chat/presentation/views/chat_view.dart';
 import '../../../data/model/bottom_nav_model.dart';
+import '../../../data/model/category_item_model.dart';
 import '../../views/main_home_view.dart';
 
 part 'home_event.dart';
@@ -17,6 +18,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         currentIndex = event.index;
         emit(ChangeBottomNav());
       }
+      if (event is ChangeCategoryEvent) {
+        if (categoryIndex == event.index) return;
+        categoryIndex = event.index;
+        emit(ChangeCategory());
+      }
     });
   }
   int currentIndex = 0;
@@ -28,5 +34,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   List<Widget> views = const [
     MainHomeView(),
     ChatView(),
+  ];
+
+  int categoryIndex = 0;
+  List<CategoryItemModel> categoryItems = [
+    CategoryItemModel(image: Assets.imagesBurger, title: "Burger", index: 0),
+    CategoryItemModel(image: Assets.imagesTaco, title: "Taco", index: 1),
+    CategoryItemModel(image: Assets.imagesDrink, title: "Drink", index: 2),
+    CategoryItemModel(image: Assets.imagesPizza, title: "Pizza", index: 3),
   ];
 }
