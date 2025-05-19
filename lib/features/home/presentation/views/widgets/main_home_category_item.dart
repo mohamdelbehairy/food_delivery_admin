@@ -21,7 +21,7 @@ class MainHomeCategoryItem extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         height: 65,
-        width: 59,
+        width: 60,
         decoration: BoxDecoration(
             color: isSeclected ? AppColors.primaryColor : Colors.white,
             borderRadius: BorderRadius.circular(8)),

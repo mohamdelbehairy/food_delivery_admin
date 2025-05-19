@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'main_home_view_components.dart';
+import 'main_home_category_section.dart';
+import 'main_home_view_grid_view.dart';
 import 'main_home_view_header.dart';
 
 class MainHomeViewBody extends StatelessWidget {
@@ -8,11 +9,14 @@ class MainHomeViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MainHomeViewHeader(),
-        SizedBox(height: 24),
-        MainHomeViewComponents(),
+        const MainHomeViewHeader(),
+        const SizedBox(height: 24),
+        const MainHomeCategorySection(),
+        const SizedBox(height: 24),
+        const MainHomeViewGridView(),
       ],
     );
   }

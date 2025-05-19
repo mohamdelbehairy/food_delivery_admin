@@ -10,6 +10,11 @@ abstract class Styles {
       fontFamily: "PlusJakartaSans",
       color: AppColors.primaryColor);
 
+  static const bold16 = TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+      fontFamily: "PlusJakartaSans",
+      color: AppColors.primaryColor);
   // semi bold
   static const semiBold16 = TextStyle(
       fontSize: 16,
@@ -61,6 +66,12 @@ abstract class Styles {
       fontWeight: FontWeight.w500,
       fontFamily: "PlusJakartaSans",
       color: AppColors.primaryColor);
+
+  static const medium16 = TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      fontFamily: "PlusJakartaSans",
+      color: AppColors.blackColor);
 
   // regular
   static const regular14 = TextStyle(
