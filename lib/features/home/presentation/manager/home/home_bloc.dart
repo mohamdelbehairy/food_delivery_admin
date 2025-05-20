@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_delivery_admin/features/add_product/presentation/views/add_product_view.dart';
 
 import '../../../../../core/utils/assets.dart';
 import '../../../../chat/presentation/views/chat_view.dart';
@@ -29,11 +30,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   List<BottomNavModel> bottomList = [
     BottomNavModel(image: Assets.imagesHome, index: 0, lable: "Home"),
     BottomNavModel(image: Assets.imagesChat, index: 1, lable: "Chat"),
+    BottomNavModel(
+        image: Assets.imagesAddProduct, index: 2, lable: "Add Product"),
   ];
 
   List<Widget> views = const [
     MainHomeView(),
     ChatView(),
+    AddProductView(),
   ];
 
   int categoryIndex = 0;

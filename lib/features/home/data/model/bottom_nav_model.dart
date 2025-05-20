@@ -5,6 +5,10 @@ class BottomNavModel {
   final int index;
   final Color? color;
 
-  BottomNavModel(
-      {required this.image, this.lable = "", required this.index, this.color});
+  BottomNavModel({
+    required this.image,
+    this.lable = "",
+    required this.index,
+    this.color,
+  });
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/model/text_field_model.dart';
-import '../../../../../core/utils/styles.dart';
-import '../../../../../core/widgets/custom_text_field.dart';
+import '../model/text_field_model.dart';
+import '../utils/styles.dart';
+import 'custom_text_field.dart';
 
-class AuthTextFieldSection extends StatelessWidget {
-  const AuthTextFieldSection({super.key, required this.textFieldModel});
+class TextFieldSection extends StatelessWidget {
+  const TextFieldSection({super.key, required this.textFieldModel});
   final TextFieldModel textFieldModel;
 
   @override

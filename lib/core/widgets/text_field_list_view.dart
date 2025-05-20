@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/model/text_field_model.dart';
-import 'auth_text_field_section.dart';
+import '../model/text_field_model.dart';
+import 'text_field_section.dart';
 
 class TextFieldListView extends StatelessWidget {
   const TextFieldListView({super.key, required this.list});
@@ -12,6 +12,6 @@ class TextFieldListView extends StatelessWidget {
     return Column(
         spacing: 24,
         children:
-            list.map((e) => AuthTextFieldSection(textFieldModel: e)).toList());
+            list.map((e) => TextFieldSection(textFieldModel: e)).toList());
   }
 }

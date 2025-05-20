@@ -43,4 +43,15 @@ abstract class Helper {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(message)));
   }
+
+  static bool convertTextFieldPrice(String text) {
+    final convertToNumber = num.tryParse(text);
+    if ((convertToNumber == null ||
+            (convertToNumber.runtimeType != int &&
+                convertToNumber.runtimeType != double)) ||
+        convertToNumber <= 0) {
+      return true;
+    }
+    return false;
+  }
 }

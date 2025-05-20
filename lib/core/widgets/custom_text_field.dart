@@ -13,6 +13,7 @@ class CustomTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       style: Styles.semiBold16,
+      readOnly: textFieldModel.readOnly,
       validator: textFieldModel.validator,
       controller: textFieldModel.controller,
       cursorColor: AppColors.primaryColor,

@@ -4,7 +4,7 @@ import 'package:food_delivery_admin/core/model/button_model.dart';
 
 import '../../../../../core/widgets/custom_button.dart';
 import '../../manager/login/login_bloc.dart';
-import 'text_field_list_view.dart';
+import '../../../../../core/widgets/text_field_list_view.dart';
 import 'login_forgot_password.dart';
 
 class LoginTextFieldAndButtonSection extends StatelessWidget {

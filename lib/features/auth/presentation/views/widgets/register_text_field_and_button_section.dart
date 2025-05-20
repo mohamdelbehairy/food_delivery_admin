@@ -5,7 +5,7 @@ import 'package:food_delivery_admin/core/model/button_model.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../manager/register/register_bloc.dart';
 import 'register_agree_and_privacy_box.dart';
-import 'text_field_list_view.dart';
+import '../../../../../core/widgets/text_field_list_view.dart';
 
 class RegisterTextFieldAndButtonSection extends StatelessWidget {
   const RegisterTextFieldAndButtonSection({super.key});

@@ -4,7 +4,7 @@ import 'package:food_delivery_admin/core/model/button_model.dart';
 import 'package:food_delivery_admin/core/widgets/custom_button.dart';
 
 import '../../manager/forgot_password/forgot_password_bloc.dart';
-import 'text_field_list_view.dart';
+import '../../../../../core/widgets/text_field_list_view.dart';
 
 class ForgotPasswordTextFieldAndButtonSection extends StatelessWidget {
   const ForgotPasswordTextFieldAndButtonSection({super.key});

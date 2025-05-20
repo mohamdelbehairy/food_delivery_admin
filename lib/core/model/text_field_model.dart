@@ -4,7 +4,7 @@ class TextFieldModel {
   final String? lable, hintText;
   final TextEditingController? controller;
   final Widget? suffixIcon;
-  final bool obscureText;
+  final bool obscureText, readOnly;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
 
@@ -15,5 +15,6 @@ class TextFieldModel {
       this.suffixIcon,
       this.obscureText = true,
       this.keyboardType,
-      this.validator});
+      this.validator,
+      this.readOnly = false});
 }
