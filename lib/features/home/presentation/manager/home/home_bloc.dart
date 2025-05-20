@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_delivery_admin/features/add_product/presentation/views/add_product_view.dart';
 
 import '../../../../../core/utils/assets.dart';
+import '../../../../add_product/data/model/product_bottom_sheet_item_model.dart';
 import '../../../../chat/presentation/views/chat_view.dart';
 import '../../../data/model/bottom_nav_model.dart';
 import '../../../data/model/category_item_model.dart';
@@ -23,6 +24,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         if (categoryIndex == event.index) return;
         categoryIndex = event.index;
         emit(ChangeCategory());
+      }
+
+      if (event is SelectProductCategoryEvent) {
+        if (categoryProductIndex == event.index) return;
+        categoryProductIndex = event.index;
+        emit(ChangeCategoryProduct());
       }
     });
   }
@@ -47,4 +54,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     CategoryItemModel(image: Assets.imagesDrink, title: "Drink", index: 2),
     CategoryItemModel(image: Assets.imagesPizza, title: "Pizza", index: 3),
   ];
+
+  int categoryProductIndex = -1;
+  List<ProductBottomSheetItemModel> bottomSheetItems() {
+    return [
+      ProductBottomSheetItemModel(image: Assets.imagesBurger, title: "Burger"),
+      ProductBottomSheetItemModel(image: Assets.imagesTaco, title: "Taco"),
+      ProductBottomSheetItemModel(image: Assets.imagesDrink, title: "Drink"),
+      ProductBottomSheetItemModel(image: Assets.imagesPizza, title: "Pizza"),
+    ];
+  }
 }

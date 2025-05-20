@@ -10,7 +10,7 @@ class AddProductView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AddProductBloc(),
+      create: (context) => AddProductBloc()..initTextFields(),
       child: const Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(child: AddProductViewBody()),

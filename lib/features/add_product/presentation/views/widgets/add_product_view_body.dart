@@ -20,7 +20,7 @@ class AddProductViewBody extends StatelessWidget {
             key: addProduct.formKey,
             child: Column(
               children: [
-                TextFieldListView(list: addProduct.textFieldItems()),
+                TextFieldListView(list: addProduct.textFieldItems(context)),
                 const SizedBox(height: 24),
                 CustomButton(
                     buttonModel: ButtonModel(

@@ -30,6 +30,10 @@ class Assets {
   /// assets/images/chat_background.png
   static const String imagesChatBackground = "assets/images/chat_background.png";
 
+  /// Assets for imagesDone
+  /// assets/images/done.svg
+  static const String imagesDone = "assets/images/done.svg";
+
   /// Assets for imagesDoubleCheck
   /// assets/images/double_check.svg
   static const String imagesDoubleCheck = "assets/images/double_check.svg";

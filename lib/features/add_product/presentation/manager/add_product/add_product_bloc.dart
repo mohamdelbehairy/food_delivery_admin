@@ -1,8 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_delivery_admin/core/utils/constants.dart';
+import 'package:food_delivery_admin/features/home/presentation/manager/home/home_bloc.dart';
 
 import '../../../../../core/model/text_field_model.dart';
 import '../../../../../core/utils/helper.dart';
+import '../../../../../core/utils/navigation.dart';
+import '../../views/widgets/product_category_bottom_sheet.dart';
 import '../../views/widgets/product_category_suffix_icon.dart';
 
 part 'add_product_event.dart';
@@ -16,16 +22,38 @@ class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
           formKey.currentState!.save();
         }
       }
+      if (event is SelectCategoryEvent) {
+        if (categoryIndex == event.index) return;
+        categoryIndex = event.index;
+        emit(SelectCategoryState());
+      }
+      if (event is CategoryButtonEvent) {
+        if (event.index == -1) return;
+        _productCategory!.text = Constants.categories[event.index];
+        log("text: ${_productCategory!.text}");
+        log("name: ${Constants.categories[event.index]}");
+        emit(SelectCategoryState());
+      }
     });
   }
 
-  final TextEditingController _productName = TextEditingController();
-  final TextEditingController _productPrice = TextEditingController();
-  final TextEditingController _productCategory = TextEditingController();
-  final TextEditingController _productDescription = TextEditingController();
+  int categoryIndex = -1;
+
+  TextEditingController? _productName;
+  TextEditingController? _productPrice;
+  TextEditingController? _productCategory;
+  TextEditingController? _productDescription;
+
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  List<TextFieldModel> textFieldItems() {
+  void initTextFields() {
+    _productName = TextEditingController();
+    _productPrice = TextEditingController();
+    _productCategory = TextEditingController();
+    _productDescription = TextEditingController();
+  }
+
+  List<TextFieldModel> textFieldItems(BuildContext context) {
     return [
       TextFieldModel(
           lable: "Product Name",
@@ -43,7 +71,7 @@ class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
         controller: _productPrice,
         keyboardType: TextInputType.number,
         validator: (value) {
-          if (_productName.text.isEmpty) return null;
+          if (_productName!.text.isEmpty) return null;
           if (value == null || value.isEmpty) {
             return "Product price is required";
           }
@@ -62,14 +90,29 @@ class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
       ),
       TextFieldModel(
           lable: "Product Category",
-          hintText: "Type something longer here...",
+          hintText: "Select Product Category here...",
           readOnly: true,
           controller: _productCategory,
-          suffixIcon: const ProductCategorySuffixIcon(),
+          suffixIcon: ProductCategorySuffixIcon(onTap: () async {
+            final result = await showModalBottomSheet(
+                backgroundColor: Colors.white,
+                context: context,
+                builder: (context) => ProductCategoryBottomSheet(onTap: () {
+                      final index =
+                          context.read<HomeBloc>().categoryProductIndex;
+                      if (index == -1) return;
+                      _productCategory!.text = Constants.categories[index];
+                      Navigation.pop(context);
+                    }));
+            if (result == null) {
+              // ignore: use_build_context_synchronously
+              context.read<HomeBloc>().categoryProductIndex = -1;
+            }
+          }),
           validator: (value) {
-            if (_productName.text.isEmpty ||
-                _productPrice.text.isEmpty ||
-                Helper.convertTextFieldPrice(_productPrice.text)) {
+            if (_productName!.text.isEmpty ||
+                _productPrice!.text.isEmpty ||
+                Helper.convertTextFieldPrice(_productPrice!.text)) {
               return null;
             }
             if (value == null || value.isEmpty) {
@@ -82,9 +125,9 @@ class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
           hintText: "Type something longer here...",
           controller: _productDescription,
           validator: (value) {
-            if (_productName.text.isEmpty ||
-                _productPrice.text.isEmpty ||
-                _productCategory.text.isEmpty) {
+            if (_productName!.text.isEmpty ||
+                _productPrice!.text.isEmpty ||
+                _productCategory!.text.isEmpty) {
               return null;
             }
             if (value == null || value.isEmpty) {
@@ -97,10 +140,10 @@ class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
 
   @override
   Future<void> close() {
-    _productName.dispose();
-    _productPrice.dispose();
-    _productCategory.dispose();
-    _productDescription.dispose();
+    _productName?.dispose();
+    _productPrice?.dispose();
+    _productCategory?.dispose();
+    _productDescription?.dispose();
     return super.close();
   }
 }
