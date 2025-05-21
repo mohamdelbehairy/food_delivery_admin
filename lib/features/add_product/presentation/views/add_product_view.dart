@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/utils/helper.dart';
+import '../../../../core/utils/service/image_picker_service.dart';
 import '../../../product_data/data/repo/product_data_repo_impl.dart';
 import '../manager/add_product/add_product_bloc.dart';
 import 'widgets/add_product_view_body.dart';
@@ -12,9 +13,9 @@ class AddProductView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          AddProductBloc(Helper.getIt.get<ProductDataRepoImpl>())
-            ..initTextFields(),
+      create: (context) => AddProductBloc(
+          Helper.getIt.get<ProductDataRepoImpl>(), ImagePickerService())
+        ..initTextFields(),
       child: const Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(child: AddProductViewBody())),

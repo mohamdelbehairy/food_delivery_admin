@@ -1,48 +1,51 @@
 import 'dart:developer';
+import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_delivery_admin/core/utils/constants.dart';
-import 'package:food_delivery_admin/features/home/presentation/manager/home/home_bloc.dart';
-import 'package:food_delivery_admin/features/product_data/data/model/product_data_model.dart';
-import 'package:food_delivery_admin/features/product_data/data/repo/product_data_repo.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../../../core/model/text_field_model.dart';
+import '../../../../../core/utils/app_colors.dart';
+import '../../../../../core/utils/constants.dart';
 import '../../../../../core/utils/helper.dart';
 import '../../../../../core/utils/navigation.dart';
+import '../../../../../core/utils/service/image_picker_service.dart';
+import '../../../../home/presentation/manager/home/home_bloc.dart';
+import '../../../../product_data/data/repo/product_data_repo.dart';
 import '../../views/widgets/product_category_bottom_sheet.dart';
-import '../../views/widgets/product_category_suffix_icon.dart';
+import '../../views/widgets/product_images_suffix_icon.dart';
+import '../../views/widgets/product_suffix_icon.dart';
 
 part 'add_product_event.dart';
 part 'add_product_state.dart';
 
 class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
   final ProductDataRepo _productDataRepo;
-  AddProductBloc(this._productDataRepo) : super(AddProductInitial()) {
+  final ImagePickerService _imagePickerService;
+  AddProductBloc(this._productDataRepo, this._imagePickerService)
+      : super(AddProductInitial()) {
     on<AddProductEvent>((event, emit) async {
       if (event is AddProductButtonEvent) {
         if (formKey.currentState!.validate()) {
           formKey.currentState!.save();
-          isLoading = true;
-          emit(AddProductLoading());
-          await _productDataRepo
-              .addProductData(ProductDataModel(
-                  productID: const Uuid().v4(),
-                  productName: _productName!.text,
-                  productPrice: _productPrice!.text,
-                  productCategory: _productCategory!.text,
-                  productDescription: _productCategory!.text,
-                  ownerID: Helper.getIt.get<FirebaseAuth>().currentUser!.uid))
-              .then((value) {
-            isLoading = false;
-            emit(AddProductSuccess());
-          }).catchError((error) {
-            log("error from add product: $error");
-            isLoading = false;
-            emit(AddProductFailure());
-          });
+          // isLoading = true;
+          // emit(AddProductLoading());
+          // await _productDataRepo
+          //     .addProductData(ProductDataModel(
+          //         productID: const Uuid().v4(),
+          //         productName: _productName!.text,
+          //         productPrice: _productPrice!.text,
+          //         productCategory: _productCategory!.text,
+          //         productDescription: _productCategory!.text,
+          //         ownerID: Helper.getIt.get<FirebaseAuth>().currentUser!.uid))
+          //     .then((value) {
+          //   isLoading = false;
+          //   emit(AddProductSuccess());
+          // }).catchError((error) {
+          //   log("error from add product: $error");
+          //   isLoading = false;
+          //   emit(AddProductFailure());
+          // });
         }
       }
       if (event is SelectCategoryEvent) {
@@ -61,11 +64,23 @@ class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
         _productCategory!.clear();
         _productDescription!.clear();
       }
+
+      if (event is PickImageEvent) {
+        images = await _imagePickerService.pickImage();
+        if (images == null) return;
+        emit(PickImageSuccess());
+      }
+      if (event is RemoveImageEvent) {
+        if (images == null) return;
+        images!.removeAt(event.index);
+        emit(PickImageSuccess());
+      }
     });
   }
 
   int categoryIndex = -1;
   bool isLoading = false;
+  List<File>? images = [];
 
   TextEditingController? _productName;
   TextEditingController? _productPrice;
@@ -84,6 +99,11 @@ class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
   List<TextFieldModel> textFieldItems(BuildContext context) {
     return [
       TextFieldModel(
+          lable: "Product Images",
+          hintText: "Select Product Images here...",
+          readOnly: true,
+          suffixIcon: const ProductImagesSuffixIcon()),
+      TextFieldModel(
           lable: "Product Name",
           hintText: "Type something longer here...",
           controller: _productName,
@@ -99,7 +119,9 @@ class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
         controller: _productPrice,
         keyboardType: TextInputType.number,
         validator: (value) {
-          if (_productName!.text.isEmpty) return null;
+          if (_productName!.text.isEmpty) {
+            return null;
+          }
           if (value == null || value.isEmpty) {
             return "Product price is required";
           }
@@ -121,7 +143,7 @@ class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
           hintText: "Select Product Category here...",
           readOnly: true,
           controller: _productCategory,
-          suffixIcon: ProductCategorySuffixIcon(onTap: () async {
+          suffixIcon: ProductSuffixIcon(onTap: () async {
             final result = await showModalBottomSheet(
                 backgroundColor: Colors.white,
                 context: context,

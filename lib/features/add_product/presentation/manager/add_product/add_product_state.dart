@@ -11,3 +11,5 @@ final class AddProductLoading extends AddProductState {}
 final class AddProductSuccess extends AddProductState {}
 
 final class AddProductFailure extends AddProductState {}
+
+final class PickImageSuccess extends AddProductState {}
