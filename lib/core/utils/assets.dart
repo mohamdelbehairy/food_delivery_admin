@@ -14,10 +14,6 @@ class Assets {
   /// assets/images/burger.png
   static const String imagesBurger = "assets/images/burger.png";
 
-  /// Assets for imagesBurgerTest
-  /// assets/images/burger_test.png
-  static const String imagesBurgerTest = "assets/images/burger_test.png";
-
   /// Assets for imagesCall
   /// assets/images/call.svg
   static const String imagesCall = "assets/images/call.svg";

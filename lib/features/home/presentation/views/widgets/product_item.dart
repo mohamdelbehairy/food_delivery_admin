@@ -20,7 +20,7 @@ class ProductItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const ProductItemImage(),
+          ProductItemImage(imageUrl: productDataModel.productImages[0]),
           const SizedBox(height: 12),
           Text(productDataModel.productName, style: Styles.medium16),
           const SizedBox(height: 12),

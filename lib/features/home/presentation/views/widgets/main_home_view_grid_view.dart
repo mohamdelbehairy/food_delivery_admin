@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../product_data/data/model/product_data_model.dart';
 import '../../manager/home/home_bloc.dart';
 import 'product_item.dart';
 
 class MainHomeViewGridView extends StatelessWidget {
-  const MainHomeViewGridView({super.key});
+  const MainHomeViewGridView({super.key, this.productsList});
+  final List<ProductDataModel>? productsList;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class MainHomeViewGridView extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: GridView.builder(
-                itemCount: products.productsList.length,
+                itemCount: productsList?.length ?? products.productsList.length,
                 padding: EdgeInsets.zero,
                 physics: const BouncingScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -26,7 +28,8 @@ class MainHomeViewGridView extends StatelessWidget {
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16),
                 itemBuilder: (context, index) => ProductItem(
-                    productDataModel: products.productsList[index])),
+                    productDataModel:
+                        productsList?[index] ?? products.productsList[index])),
           ),
         );
       },
