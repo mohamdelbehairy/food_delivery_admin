@@ -24,10 +24,9 @@ class AddProductViewBody extends StatelessWidget {
           key: addProduct.formKey,
           child: Column(
             children: [
-              if (addProduct.images != null && addProduct.images!.isNotEmpty)
+              if (addProduct.images != null)
                 AddProductViewImages(addProduct: addProduct),
-              if (addProduct.images != null && addProduct.images!.isNotEmpty)
-                const SizedBox(height: 24),
+              if (addProduct.images != null) const SizedBox(height: 24),
               AddProductListViewAndButtonSection(addProduct: addProduct)
             ],
           ),

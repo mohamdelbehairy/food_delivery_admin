@@ -23,7 +23,7 @@ class AddProductListViewAndButtonSection extends StatelessWidget {
               buttonModel: ButtonModel(
                   buttonName: "Add Product",
                   isLoading: addProduct.isLoading,
-                  onTap: () => addProduct.add(AddProductButtonEvent()))),
+                  onTap: () => addProduct.add(AddProductButtonEvent(context)))),
         ],
       ),
     );

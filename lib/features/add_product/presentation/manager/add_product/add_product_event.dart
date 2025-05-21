@@ -2,7 +2,10 @@ part of 'add_product_bloc.dart';
 
 sealed class AddProductEvent {}
 
-final class AddProductButtonEvent extends AddProductEvent {}
+final class AddProductButtonEvent extends AddProductEvent {
+  final BuildContext context;
+  AddProductButtonEvent(this.context);
+}
 
 final class SelectCategoryEvent extends AddProductEvent {
   final int index;

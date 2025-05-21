@@ -1,16 +1,19 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../../core/model/text_field_model.dart';
-import '../../../../../core/utils/app_colors.dart';
 import '../../../../../core/utils/constants.dart';
 import '../../../../../core/utils/helper.dart';
 import '../../../../../core/utils/navigation.dart';
+import '../../../../../core/utils/service/firebase_storage_service.dart';
 import '../../../../../core/utils/service/image_picker_service.dart';
 import '../../../../home/presentation/manager/home/home_bloc.dart';
+import '../../../../product_data/data/model/product_data_model.dart';
 import '../../../../product_data/data/repo/product_data_repo.dart';
 import '../../views/widgets/product_category_bottom_sheet.dart';
 import '../../views/widgets/product_images_suffix_icon.dart';
@@ -22,30 +25,48 @@ part 'add_product_state.dart';
 class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
   final ProductDataRepo _productDataRepo;
   final ImagePickerService _imagePickerService;
-  AddProductBloc(this._productDataRepo, this._imagePickerService)
+  final FirebaseStorageService _firebaseStorageService;
+
+  AddProductBloc(this._productDataRepo, this._imagePickerService,
+      this._firebaseStorageService)
       : super(AddProductInitial()) {
     on<AddProductEvent>((event, emit) async {
       if (event is AddProductButtonEvent) {
         if (formKey.currentState!.validate()) {
           formKey.currentState!.save();
-          // isLoading = true;
-          // emit(AddProductLoading());
-          // await _productDataRepo
-          //     .addProductData(ProductDataModel(
-          //         productID: const Uuid().v4(),
-          //         productName: _productName!.text,
-          //         productPrice: _productPrice!.text,
-          //         productCategory: _productCategory!.text,
-          //         productDescription: _productCategory!.text,
-          //         ownerID: Helper.getIt.get<FirebaseAuth>().currentUser!.uid))
-          //     .then((value) {
-          //   isLoading = false;
-          //   emit(AddProductSuccess());
-          // }).catchError((error) {
-          //   log("error from add product: $error");
-          //   isLoading = false;
-          //   emit(AddProductFailure());
-          // });
+
+          if (images == null || images!.isEmpty) {
+            Helper.customSnackBar(event.context,
+                message: "Please select product images");
+          } else if (images!.length > 5) {
+            Helper.customSnackBar(event.context,
+                message: "You can select maximum 5 images");
+          } else {
+            isLoading = true;
+            emit(AddProductLoading());
+            final imagesUrl =
+                await _firebaseStorageService.uploadImages(images!);
+            await _productDataRepo
+                .addProductData(
+              ProductDataModel(
+                  productID: const Uuid().v4(),
+                  productName: _productName!.text,
+                  productPrice: _productPrice!.text,
+                  productCategory: _productCategory!.text,
+                  productDescription: _productDescription!.text,
+                  ownerID: Helper.getIt.get<FirebaseAuth>().currentUser!.uid,
+                  productImages: imagesUrl,
+                  createdAt: DateTime.now()),
+            )
+                .then((value) {
+              isLoading = false;
+              emit(AddProductSuccess());
+            }).catchError((error) {
+              log("error from add product: $error");
+              isLoading = false;
+              emit(AddProductFailure());
+            });
+          }
         }
       }
       if (event is SelectCategoryEvent) {
@@ -63,6 +84,8 @@ class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
         _productPrice!.clear();
         _productCategory!.clear();
         _productDescription!.clear();
+        images?.clear();
+        images = null;
       }
 
       if (event is PickImageEvent) {
@@ -80,7 +103,7 @@ class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
 
   int categoryIndex = -1;
   bool isLoading = false;
-  List<File>? images = [];
+  List<File>? images;
 
   TextEditingController? _productName;
   TextEditingController? _productPrice;

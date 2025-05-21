@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_admin/core/utils/service/firebase_storage_service.dart';
+import 'package:food_delivery_admin/core/utils/service/image_picker_service.dart';
 import 'package:food_delivery_admin/core/utils/service/shared_pref_service.dart';
 import 'package:food_delivery_admin/features/user_data/data/repo/user_data_repo_impl.dart';
 import 'package:get_it/get_it.dart';
@@ -24,6 +27,8 @@ abstract class Helper {
     getIt.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
     getIt.registerLazySingleton<FirebaseFirestore>(
         () => FirebaseFirestore.instance);
+    getIt
+        .registerLazySingleton<FirebaseStorage>(() => FirebaseStorage.instance);
 
     getIt.registerSingleton<AuthRepoImpl>(
         AuthRepoImpl(getIt.get<FirebaseAuth>()));
@@ -34,6 +39,9 @@ abstract class Helper {
     getIt.registerSingleton<ProductDataRepoImpl>(
         ProductDataRepoImpl(getIt.get<FirebaseFirestore>()));
 
+    getIt.registerSingleton(
+        FirebaseStorageService(getIt.get<FirebaseStorage>()));
+
     // shared pref
     getIt.registerLazySingletonAsync<SharedPreferences>(
         () => SharedPreferences.getInstance());
@@ -41,6 +49,8 @@ abstract class Helper {
 
     getIt.registerSingleton<SharedPrefService>(
         SharedPrefService(getIt.get<SharedPreferences>()));
+
+    getIt.registerSingleton<ImagePickerService>(ImagePickerService());
   }
 
   static void customSnackBar(BuildContext context, {required String message}) {

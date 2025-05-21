@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ProductDataModel {
   final String productID,
       productName,
@@ -6,13 +8,18 @@ class ProductDataModel {
       productDescription,
       ownerID;
 
+  final List<String> productImages;
+  final DateTime createdAt;
+
   ProductDataModel(
       {required this.productID,
       required this.productName,
       required this.productPrice,
       required this.productCategory,
       required this.productDescription,
-      required this.ownerID});
+      required this.ownerID,
+      required this.productImages,
+      required this.createdAt});
 
   factory ProductDataModel.fromJson(json) {
     return ProductDataModel(
@@ -21,7 +28,9 @@ class ProductDataModel {
         productPrice: json['productPrice'],
         productCategory: json['productCategory'],
         productDescription: json['productDescription'],
-        ownerID: json['ownerID']);
+        ownerID: json['ownerID'],
+        productImages: List<String>.from(json['productImages']),
+        createdAt: (json['createdAt'] as Timestamp).toDate());
   }
 
   toJson() {
@@ -31,7 +40,9 @@ class ProductDataModel {
       'productPrice': productPrice,
       'productCategory': productCategory,
       'productDescription': productDescription,
-      'ownerID': ownerID
+      'ownerID': ownerID,
+      'productImages': productImages,
+      'createdAt': createdAt
     };
   }
 }
