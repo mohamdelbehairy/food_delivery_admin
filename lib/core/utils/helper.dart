@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/auth/data/repo/auth_repo_impl.dart';
+import '../../features/product_data/data/repo/product_data_repo_impl.dart';
 
 abstract class Helper {
   static OutlineInputBorder buildBorder() {
@@ -29,6 +30,9 @@ abstract class Helper {
 
     getIt.registerSingleton<UserDataRepoImpl>(
         UserDataRepoImpl(getIt.get<FirebaseFirestore>()));
+
+    getIt.registerSingleton<ProductDataRepoImpl>(
+        ProductDataRepoImpl(getIt.get<FirebaseFirestore>()));
 
     // shared pref
     getIt.registerLazySingletonAsync<SharedPreferences>(

@@ -1,9 +1,13 @@
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_delivery_admin/core/utils/constants.dart';
 import 'package:food_delivery_admin/features/home/presentation/manager/home/home_bloc.dart';
+import 'package:food_delivery_admin/features/product_data/data/model/product_data_model.dart';
+import 'package:food_delivery_admin/features/product_data/data/repo/product_data_repo.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../../core/model/text_field_model.dart';
 import '../../../../../core/utils/helper.dart';
@@ -15,11 +19,30 @@ part 'add_product_event.dart';
 part 'add_product_state.dart';
 
 class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
-  AddProductBloc() : super(AddProductInitial()) {
-    on<AddProductEvent>((event, emit) {
+  final ProductDataRepo _productDataRepo;
+  AddProductBloc(this._productDataRepo) : super(AddProductInitial()) {
+    on<AddProductEvent>((event, emit) async {
       if (event is AddProductButtonEvent) {
         if (formKey.currentState!.validate()) {
           formKey.currentState!.save();
+          isLoading = true;
+          emit(AddProductLoading());
+          await _productDataRepo
+              .addProductData(ProductDataModel(
+                  productID: const Uuid().v4(),
+                  productName: _productName!.text,
+                  productPrice: _productPrice!.text,
+                  productCategory: _productCategory!.text,
+                  productDescription: _productCategory!.text,
+                  ownerID: Helper.getIt.get<FirebaseAuth>().currentUser!.uid))
+              .then((value) {
+            isLoading = false;
+            emit(AddProductSuccess());
+          }).catchError((error) {
+            log("error from add product: $error");
+            isLoading = false;
+            emit(AddProductFailure());
+          });
         }
       }
       if (event is SelectCategoryEvent) {
@@ -30,14 +53,19 @@ class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
       if (event is CategoryButtonEvent) {
         if (event.index == -1) return;
         _productCategory!.text = Constants.categories[event.index];
-        log("text: ${_productCategory!.text}");
-        log("name: ${Constants.categories[event.index]}");
         emit(SelectCategoryState());
+      }
+      if (event is ProductDefaultEvent) {
+        _productName!.clear();
+        _productPrice!.clear();
+        _productCategory!.clear();
+        _productDescription!.clear();
       }
     });
   }
 
   int categoryIndex = -1;
+  bool isLoading = false;
 
   TextEditingController? _productName;
   TextEditingController? _productPrice;

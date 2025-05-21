@@ -5,6 +5,7 @@ abstract class Constants {
   static const userID = "userID";
 
   static const userCollection = "users";
+  static const productCollection = "products";
   static const admin = "admin";
   static const notAdmin = "notAdmin";
 

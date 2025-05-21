@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/utils/styles.dart';
+import '../../../../product_data/data/model/product_data_model.dart';
 import 'product_item_image.dart';
 import 'product_item_rate_and_distance_section.dart';
 
 class ProductItem extends StatelessWidget {
-  const ProductItem({super.key});
+  const ProductItem({super.key, required this.productDataModel});
+  final ProductDataModel productDataModel;
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +22,11 @@ class ProductItem extends StatelessWidget {
         children: [
           const ProductItemImage(),
           const SizedBox(height: 12),
-          Text("Ordinary Burgers", style: Styles.medium16),
+          Text(productDataModel.productName, style: Styles.medium16),
           const SizedBox(height: 12),
           const ProductItemRateAndDistanceSection(),
           const SizedBox(height: 12),
-          Text("\$ 17,230", style: Styles.bold16),
+          Text("\$ ${productDataModel.productPrice}", style: Styles.bold16),
         ],
       ),
     );

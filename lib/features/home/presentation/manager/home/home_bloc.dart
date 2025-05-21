@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_delivery_admin/features/add_product/presentation/views/add_product_view.dart';
 
 import '../../../../../core/utils/assets.dart';
 import '../../../../add_product/data/model/product_bottom_sheet_item_model.dart';
+import '../../../../add_product/presentation/views/add_product_view.dart';
 import '../../../../chat/presentation/views/chat_view.dart';
+import '../../../../product_data/data/model/product_data_model.dart';
+import '../../../../product_data/data/repo/product_data_repo.dart';
 import '../../../data/model/bottom_nav_model.dart';
 import '../../../data/model/category_item_model.dart';
 import '../../views/main_home_view.dart';
@@ -13,7 +15,8 @@ part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  HomeBloc() : super(HomeInitial()) {
+  final ProductDataRepo _productDataRepo;
+  HomeBloc(this._productDataRepo) : super(HomeInitial()) {
     on<HomeEvent>((event, emit) {
       if (event is ChangeBottomNavEvent) {
         if (currentIndex == event.index) return;
@@ -23,6 +26,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (event is ChangeCategoryEvent) {
         if (categoryIndex == event.index) return;
         categoryIndex = event.index;
+        productsList = _getProducts();
         emit(ChangeCategory());
       }
 
@@ -32,7 +36,56 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(ChangeCategoryProduct());
       }
     });
+
+    on<GetProductDateEvent>((event, emit) {
+      allProductsList = event.productList;
+      productsList = _getProducts();
+      emit(GetProductDataSuccess());
+    });
+
+    _productDataRepo.getProductData((snapshot) {
+      allProductsList.clear();
+      _burgerList.clear();
+      _tacoList.clear();
+      _drinkList.clear();
+      _pizzaList.clear();
+      
+      for (var element in snapshot.docs) {
+        var product = ProductDataModel.fromJson(element.data());
+        allProductsList.add(product);
+
+        if (product.productCategory == "Burger") {
+          _burgerList.add(product);
+        }
+        if (product.productCategory == "Taco") {
+          _tacoList.add(product);
+        }
+        if (product.productCategory == "Drink") {
+          _drinkList.add(product);
+        }
+        if (product.productCategory == "Pizza") {
+          _pizzaList.add(product);
+        }
+      }
+      add(GetProductDateEvent(allProductsList));
+    });
   }
+  List<ProductDataModel> _getProducts() {
+    if (categoryIndex == 1) return _tacoList;
+    if (categoryIndex == 2) return _drinkList;
+    if (categoryIndex == 3) return _pizzaList;
+
+    return _burgerList;
+  }
+
+  List<ProductDataModel> allProductsList = [];
+  List<ProductDataModel> productsList = [];
+
+  final List<ProductDataModel> _burgerList = [];
+  final List<ProductDataModel> _tacoList = [];
+  final List<ProductDataModel> _drinkList = [];
+  final List<ProductDataModel> _pizzaList = [];
+
   int currentIndex = 0;
   List<BottomNavModel> bottomList = [
     BottomNavModel(image: Assets.imagesHome, index: 0, lable: "Home"),
