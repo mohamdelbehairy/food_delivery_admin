@@ -2,16 +2,19 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_delivery_admin/core/model/button_model.dart';
 
 import '../../../../../core/model/alert_dialog_model.dart';
+import '../../../../../core/model/button_model.dart';
 import '../../../../../core/model/text_field_model.dart';
+import '../../../../../core/utils/constants.dart';
 import '../../../../../core/utils/helper.dart';
 import '../../../../../core/utils/navigation.dart';
 import '../../../../../core/widgets/custom_alert_dialog.dart';
+import '../../../../add_product/presentation/views/widgets/product_category_bottom_sheet.dart';
 import '../../../../add_product/presentation/views/widgets/product_suffix_icon.dart';
 import '../../../../product_data/data/model/product_data_model.dart';
 import '../../../../product_data/data/repo/product_data_repo.dart';
+import '../home/home_bloc.dart';
 
 part 'product_event.dart';
 part 'product_state.dart';
@@ -20,6 +23,17 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   final ProductDataRepo _productDataRepo;
   ProductBloc(this._productDataRepo) : super(ProductInitial()) {
     on<ProductEvent>((event, emit) async {
+      if (event is CancelChangesEvent) {
+        if (_productName!.text != event.productDataModel.productName ||
+            _productPrice!.text != event.productDataModel.productPrice ||
+            _productCategory!.text != event.productDataModel.productCategory ||
+            _productDescription!.text !=
+                event.productDataModel.productDescription) {
+          initTextFields(event.productDataModel);
+          emit(CancleChanges());
+        }
+      }
+
       if (event is DeleteProductEvent) {
         isLoading = true;
         emit(ProductLoading());
@@ -101,20 +115,20 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           readOnly: true,
           controller: _productCategory,
           suffixIcon: ProductSuffixIcon(onTap: () async {
-            // final result = await showModalBottomSheet(
-            //     backgroundColor: Colors.white,
-            //     context: context,
-            //     builder: (context) => ProductCategoryBottomSheet(onTap: () {
-            //           final index =
-            //               context.read<HomeBloc>().categoryProductIndex;
-            //           if (index == -1) return;
-            //           _productCategory!.text = Constants.categories[index];
-            //           Navigation.pop(context);
-            //         }));
-            // if (result == null) {
-            //   // ignore: use_build_context_synchronously
-            //   context.read<HomeBloc>().categoryProductIndex = -1;
-            // }
+            final result = await showModalBottomSheet(
+                backgroundColor: Colors.white,
+                context: context,
+                builder: (context) => ProductCategoryBottomSheet(onTap: () {
+                      final index =
+                          context.read<HomeBloc>().categoryProductIndex;
+                      if (index == -1) return;
+                      _productCategory!.text = Constants.categories[index];
+                      Navigation.pop(context);
+                    }));
+            if (result == null) {
+              // ignore: use_build_context_synchronously
+              context.read<HomeBloc>().categoryProductIndex = -1;
+            }
           }),
           validator: (value) {
             if (_productName!.text.isEmpty ||
@@ -149,7 +163,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       {required ProductDataModel productDataModel}) {
     return [
       ButtonModel(buttonName: "Update Product"),
-      // ButtonModel(),
+      ButtonModel(
+          buttonName: "Cancel Changes",
+          onTap: () => add(CancelChangesEvent(productDataModel))),
       ButtonModel(
         isLoading: isLoading,
         buttonName: "Delete Product",

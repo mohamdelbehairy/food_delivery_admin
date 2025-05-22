@@ -12,11 +12,15 @@ class ProductTextFieldAndButtonSection extends StatelessWidget {
   const ProductTextFieldAndButtonSection(
       {super.key, required this.productDataModel});
   final ProductDataModel productDataModel;
+
   @override
   Widget build(BuildContext context) {
     final product = context.read<ProductBloc>();
     return BlocConsumer<ProductBloc, ProductState>(
       listener: (context, state) {
+        if (state is CancleChanges) {
+          Helper.customSnackBar(context, message: "Changes cancelled");
+        }
         if (state is DeleteProductSuccess) {
           Helper.customSnackBar(context,
               message: "Product deleted successfully");
@@ -27,7 +31,7 @@ class ProductTextFieldAndButtonSection extends StatelessWidget {
         return Column(
           children: [
             TextFieldListView(list: product.textFieldItems(context)),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
             Column(
               spacing: 8,
               children: product
