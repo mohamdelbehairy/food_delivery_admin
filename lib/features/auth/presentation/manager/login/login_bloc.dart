@@ -1,16 +1,15 @@
 import 'dart:developer';
 
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/model/text_field_model.dart';
 import '../../../../../core/utils/constants.dart';
-import '../../../../../core/utils/helper.dart';
 import '../../../../../core/utils/service/firebase_auth_service.dart';
+import '../../../../../core/utils/service/firebase_firestore_service.dart';
 import '../../../../../core/utils/service/shared_pref_service.dart';
-import '../../../../user_data/data/repo/user_data_repo.dart';
+import '../../../../user_data/data/model/user_data_model.dart';
 import '../../views/widgets/email_suffix_icon.dart';
 import '../../views/widgets/login_password_suffix_icon.dart';
 
@@ -19,10 +18,11 @@ part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final FirebaseAuthService _firebaseAuthService;
-  final UserDataRepo _userDataRepo;
+  final FirebaseFirestoreService _firebaseFirestoreService;
   final SharedPrefService _sharedPrefService;
-  LoginBloc(
-      this._firebaseAuthService, this._sharedPrefService, this._userDataRepo)
+
+  LoginBloc(this._firebaseAuthService, this._firebaseFirestoreService,
+      this._sharedPrefService)
       : super(LoginInitial()) {
     _listenToEmail();
     on<LoginEvent>((event, emit) async {
@@ -40,10 +40,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
               .loginWithEmail(_email.text, _password.text)
               .then((value) async {
             if (value != null) {
-              final userData = await _userDataRepo.getFutureUserData();
+              final snapshot = await _firebaseFirestoreService.getFutureData(
+                  collectionName: Constants.userCollection, docID: value.uid);
+              final userData = UserDataModel.fromJson(snapshot!);
+
               if (userData.userRole == Constants.admin) {
-                await _sharedPrefService.setString(Constants.userID,
-                    Helper.getIt.get<FirebaseAuth>().currentUser!.uid);
+                await _sharedPrefService.setString(Constants.userID, value.uid);
                 isLoading = false;
                 emit(LoginSuccess());
               } else {

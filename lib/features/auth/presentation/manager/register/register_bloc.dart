@@ -1,14 +1,16 @@
 import 'dart:developer';
 
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_delivery_admin/core/utils/constants.dart';
+import 'package:food_delivery_admin/core/utils/helper.dart';
 
 import '../../../../../core/model/text_field_model.dart';
 import '../../../../../core/utils/service/firebase_auth_service.dart';
+import '../../../../../core/utils/service/firebase_firestore_service.dart';
 import '../../../../user_data/data/model/user_data_model.dart';
-import '../../../../user_data/data/repo/user_data_repo.dart';
 import '../../views/widgets/email_suffix_icon.dart';
 import '../../views/widgets/register_password_suffix_icon.dart';
 
@@ -17,8 +19,9 @@ part 'register_state.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   final FirebaseAuthService _firebaseAuthService;
-  final UserDataRepo _userDataRepo;
-  RegisterBloc(this._firebaseAuthService, this._userDataRepo) : super(RegisterInitial()) {
+  final FirebaseFirestoreService _firebaseFirestoreService;
+  RegisterBloc(this._firebaseAuthService, this._firebaseFirestoreService)
+      : super(RegisterInitial()) {
     _listenToEmail();
     on<RegisterEvent>((event, emit) async {
       if (event is ChangeVisibilityEvent) {
@@ -36,11 +39,16 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
                 .createUserWithEmail(_email.text, _password.text)
                 .then((value) async {
               if (value != null) {
-                await _userDataRepo.addUserData(UserDataModel(
+                final data = UserDataModel(
                     userName: _name.text,
                     userID: value.uid,
                     userEmail: _email.text,
-                    userRole: Constants.admin));
+                    userRole: Constants.admin);
+                await _firebaseFirestoreService.addData(
+                    collectionName: Constants.userCollection,
+                    docID: Helper.getIt.get<FirebaseAuth>().currentUser!.uid,
+                    data: data.toJson());
+
                 isLoading = false;
                 emit(RegisterSuccess());
               }

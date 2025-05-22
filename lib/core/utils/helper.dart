@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../features/user_data/data/repo/user_data_repo_impl.dart';
 import 'service/firebase_auth_service.dart';
 import 'service/firebase_firestore_service.dart';
 import 'service/firebase_storage_service.dart';
@@ -34,10 +33,6 @@ abstract class Helper {
     getIt.registerLazySingletonAsync<SharedPreferences>(
         () => SharedPreferences.getInstance());
     await getIt.isReady<SharedPreferences>();
-
-    // user data impl
-    getIt.registerSingleton<UserDataRepoImpl>(
-        UserDataRepoImpl(getIt.get<FirebaseFirestore>()));
 
     // services
     getIt.registerSingleton<FirebaseAuthService>(

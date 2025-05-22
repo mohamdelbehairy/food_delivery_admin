@@ -17,6 +17,13 @@ class FirebaseFirestoreService {
     _firebaseFirestore.collection(collectionName).snapshots().listen(onData);
   }
 
+  Future<Map<String, dynamic>?> getFutureData(
+      {required String collectionName, required String docID}) async {
+    final snapshot =
+        await _firebaseFirestore.collection(collectionName).doc(docID).get();
+    return snapshot.data();
+  }
+
   Future<void> updataData(
       {required String collectionName,
       required String docID,
