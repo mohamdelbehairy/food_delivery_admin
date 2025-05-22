@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_delivery_admin/core/utils/helper.dart';
 
+import '../../../../core/utils/helper.dart';
+import '../../../../core/utils/service/firebase_firestore_service.dart';
 import '../../../product_data/data/model/product_data_model.dart';
-import '../../../product_data/data/repo/product_data_repo_impl.dart';
 import '../manager/product/product_bloc.dart';
 import 'widgets/product_app_bar.dart';
 import 'widgets/product_view_body.dart';
@@ -15,8 +15,9 @@ class ProductView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ProductBloc(Helper.getIt.get<ProductDataRepoImpl>())
-        ..initTextFields(productDataModel),
+      create: (context) =>
+          ProductBloc(Helper.getIt.get<FirebaseFirestoreService>())
+            ..initTextFields(productDataModel),
       child: Scaffold(
           backgroundColor: Colors.white,
           appBar: productAppBar(context),

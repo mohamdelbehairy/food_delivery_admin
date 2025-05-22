@@ -9,19 +9,19 @@ import '../../../../../core/model/text_field_model.dart';
 import '../../../../../core/utils/constants.dart';
 import '../../../../../core/utils/helper.dart';
 import '../../../../../core/utils/navigation.dart';
+import '../../../../../core/utils/service/firebase_firestore_service.dart';
 import '../../../../../core/widgets/custom_alert_dialog.dart';
 import '../../../../add_product/presentation/views/widgets/product_category_bottom_sheet.dart';
 import '../../../../add_product/presentation/views/widgets/product_suffix_icon.dart';
 import '../../../../product_data/data/model/product_data_model.dart';
-import '../../../../product_data/data/repo/product_data_repo.dart';
 import '../home/home_bloc.dart';
 
 part 'product_event.dart';
 part 'product_state.dart';
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
-  final ProductDataRepo _productDataRepo;
-  ProductBloc(this._productDataRepo) : super(ProductInitial()) {
+  final FirebaseFirestoreService _firebaseFirestoreService;
+  ProductBloc(this._firebaseFirestoreService) : super(ProductInitial()) {
     on<ProductEvent>((event, emit) async {
       if (event is CancelChangesEvent) {
         if (_productName!.text != event.productDataModel.productName ||
@@ -37,7 +37,11 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       if (event is DeleteProductEvent) {
         isLoading = true;
         emit(ProductLoading());
-        await _productDataRepo.deleteProduct(event.productID).then((value) {
+        await _firebaseFirestoreService
+            .deleteData(
+                collectionName: Constants.productCollection,
+                docID: event.productID)
+            .then((value) {
           isLoading = false;
           emit(DeleteProductSuccess());
         }).catchError((error) {

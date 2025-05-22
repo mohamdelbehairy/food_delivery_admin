@@ -10,11 +10,11 @@ import '../../../../../core/model/text_field_model.dart';
 import '../../../../../core/utils/constants.dart';
 import '../../../../../core/utils/helper.dart';
 import '../../../../../core/utils/navigation.dart';
+import '../../../../../core/utils/service/firebase_firestore_service.dart';
 import '../../../../../core/utils/service/firebase_storage_service.dart';
 import '../../../../../core/utils/service/image_picker_service.dart';
 import '../../../../home/presentation/manager/home/home_bloc.dart';
 import '../../../../product_data/data/model/product_data_model.dart';
-import '../../../../product_data/data/repo/product_data_repo.dart';
 import '../../views/widgets/product_category_bottom_sheet.dart';
 import '../../views/widgets/product_images_suffix_icon.dart';
 import '../../views/widgets/product_suffix_icon.dart';
@@ -23,12 +23,12 @@ part 'add_product_event.dart';
 part 'add_product_state.dart';
 
 class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
-  final ProductDataRepo _productDataRepo;
   final ImagePickerService _imagePickerService;
+  final FirebaseFirestoreService _firebaseFirestoreService;
   final FirebaseStorageService _firebaseStorageService;
 
-  AddProductBloc(this._productDataRepo, this._imagePickerService,
-      this._firebaseStorageService)
+  AddProductBloc(this._imagePickerService, this._firebaseStorageService,
+      this._firebaseFirestoreService)
       : super(AddProductInitial()) {
     on<AddProductEvent>((event, emit) async {
       if (event is AddProductButtonEvent) {
@@ -46,17 +46,20 @@ class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
             emit(AddProductLoading());
             final imagesUrl =
                 await _firebaseStorageService.uploadImages(images!);
-            await _productDataRepo
-                .addProductData(
-              ProductDataModel(
-                  productID: const Uuid().v4(),
-                  productName: _productName!.text,
-                  productPrice: _productPrice!.text,
-                  productCategory: _productCategory!.text,
-                  productDescription: _productDescription!.text,
-                  ownerID: Helper.getIt.get<FirebaseAuth>().currentUser!.uid,
-                  productImages: imagesUrl,
-                  createdAt: DateTime.now()),
+            final data = ProductDataModel(
+                productID: const Uuid().v4(),
+                productName: _productName!.text,
+                productPrice: _productPrice!.text,
+                productCategory: _productCategory!.text,
+                productDescription: _productDescription!.text,
+                ownerID: Helper.getIt.get<FirebaseAuth>().currentUser!.uid,
+                productImages: imagesUrl,
+                createdAt: DateTime.now());
+            await _firebaseFirestoreService
+                .addData(
+              docID: data.productID,
+              collectionName: Constants.productCollection,
+              data: data.toJson(),
             )
                 .then((value) {
               isLoading = false;

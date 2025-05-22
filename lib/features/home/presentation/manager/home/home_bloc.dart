@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_delivery_admin/core/utils/service/firebase_firestore_service.dart';
 
 import '../../../../../core/utils/assets.dart';
+import '../../../../../core/utils/constants.dart';
 import '../../../../add_product/data/model/product_bottom_sheet_item_model.dart';
 import '../../../../add_product/presentation/views/add_product_view.dart';
 import '../../../../chat/presentation/views/chat_view.dart';
 import '../../../../product_data/data/model/product_data_model.dart';
-import '../../../../product_data/data/repo/product_data_repo.dart';
 import '../../../data/model/bottom_nav_model.dart';
 import '../../../data/model/category_item_model.dart';
 import '../../views/main_home_view.dart';
@@ -15,8 +16,8 @@ part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  final ProductDataRepo _productDataRepo;
-  HomeBloc(this._productDataRepo) : super(HomeInitial()) {
+  final FirebaseFirestoreService _firebaseFirestoreService;
+  HomeBloc(this._firebaseFirestoreService) : super(HomeInitial()) {
     on<HomeEvent>((event, emit) {
       if (event is ChangeBottomNavEvent) {
         if (currentIndex == event.index) return;
@@ -43,32 +44,34 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(GetProductDataSuccess());
     });
 
-    _productDataRepo.getProductData((snapshot) {
-      allProductsList.clear();
-      _burgerList.clear();
-      _tacoList.clear();
-      _drinkList.clear();
-      _pizzaList.clear();
-      
-      for (var element in snapshot.docs) {
-        var product = ProductDataModel.fromJson(element.data());
-        allProductsList.add(product);
+    _firebaseFirestoreService.getData(
+        collectionName: Constants.productCollection,
+        onData: (snapshot) {
+          allProductsList.clear();
+          _burgerList.clear();
+          _tacoList.clear();
+          _drinkList.clear();
+          _pizzaList.clear();
 
-        if (product.productCategory == "Burger") {
-          _burgerList.add(product);
-        }
-        if (product.productCategory == "Taco") {
-          _tacoList.add(product);
-        }
-        if (product.productCategory == "Drink") {
-          _drinkList.add(product);
-        }
-        if (product.productCategory == "Pizza") {
-          _pizzaList.add(product);
-        }
-      }
-      add(GetProductDateEvent(allProductsList));
-    });
+          for (var element in snapshot.docs) {
+            var product = ProductDataModel.fromJson(element.data());
+            allProductsList.add(product);
+
+            if (product.productCategory == "Burger") {
+              _burgerList.add(product);
+            }
+            if (product.productCategory == "Taco") {
+              _tacoList.add(product);
+            }
+            if (product.productCategory == "Drink") {
+              _drinkList.add(product);
+            }
+            if (product.productCategory == "Pizza") {
+              _pizzaList.add(product);
+            }
+          }
+          add(GetProductDateEvent(allProductsList));
+        });
   }
   List<ProductDataModel> _getProducts() {
     if (categoryIndex == 1) return _tacoList;

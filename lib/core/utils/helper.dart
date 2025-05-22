@@ -2,15 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:food_delivery_admin/core/utils/service/firebase_storage_service.dart';
-import 'package:food_delivery_admin/core/utils/service/image_picker_service.dart';
-import 'package:food_delivery_admin/core/utils/service/shared_pref_service.dart';
-import 'package:food_delivery_admin/features/user_data/data/repo/user_data_repo_impl.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/auth/data/repo/auth_repo_impl.dart';
-import '../../features/product_data/data/repo/product_data_repo_impl.dart';
+import '../../features/user_data/data/repo/user_data_repo_impl.dart';
+import 'service/firebase_firestore_service.dart';
+import 'service/firebase_storage_service.dart';
+import 'service/image_picker_service.dart';
+import 'service/shared_pref_service.dart';
 
 abstract class Helper {
   static OutlineInputBorder buildBorder() {
@@ -30,22 +30,24 @@ abstract class Helper {
     getIt
         .registerLazySingleton<FirebaseStorage>(() => FirebaseStorage.instance);
 
-    getIt.registerSingleton<AuthRepoImpl>(
-        AuthRepoImpl(getIt.get<FirebaseAuth>()));
-
-    getIt.registerSingleton<UserDataRepoImpl>(
-        UserDataRepoImpl(getIt.get<FirebaseFirestore>()));
-
-    getIt.registerSingleton<ProductDataRepoImpl>(
-        ProductDataRepoImpl(getIt.get<FirebaseFirestore>()));
-
-    getIt.registerSingleton(
-        FirebaseStorageService(getIt.get<FirebaseStorage>()));
-
     // shared pref
     getIt.registerLazySingletonAsync<SharedPreferences>(
         () => SharedPreferences.getInstance());
     await getIt.isReady<SharedPreferences>();
+
+    // auth repo impl
+    getIt.registerSingleton<AuthRepoImpl>(
+        AuthRepoImpl(getIt.get<FirebaseAuth>()));
+    // user data impl
+    getIt.registerSingleton<UserDataRepoImpl>(
+        UserDataRepoImpl(getIt.get<FirebaseFirestore>()));
+
+    // services
+    getIt.registerSingleton<FirebaseFirestoreService>(
+        FirebaseFirestoreService(getIt.get<FirebaseFirestore>()));
+
+    getIt.registerSingleton(
+        FirebaseStorageService(getIt.get<FirebaseStorage>()));
 
     getIt.registerSingleton<SharedPrefService>(
         SharedPrefService(getIt.get<SharedPreferences>()));
