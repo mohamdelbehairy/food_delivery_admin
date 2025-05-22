@@ -20,7 +20,7 @@ class AddProductViewImages extends StatelessWidget {
                 child: Stack(
                   children: [
                     Image.file(e.value,
-                        height: 100, width: 100, fit: BoxFit.fill),
+                        height: 100, width: 100, fit: BoxFit.cover),
                     Positioned(
                       top: 5,
                       right: 5,

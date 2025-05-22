@@ -24,4 +24,12 @@ class ProductDataRepoImpl extends ProductDataRepo {
         .snapshots()
         .listen(onData);
   }
+
+  @override
+  Future<void> deleteProduct(String productID) async {
+    await _firebaseFirestore
+        .collection(Constants.productCollection)
+        .doc(productID)
+        .delete();
+  }
 }

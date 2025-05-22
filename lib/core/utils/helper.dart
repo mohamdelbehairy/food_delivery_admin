@@ -54,8 +54,13 @@ abstract class Helper {
   }
 
   static void customSnackBar(BuildContext context, {required String message}) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+      snackBarAnimationStyle: AnimationStyle(
+        curve: Curves.easeIn,
+        duration: const Duration(milliseconds: 300),
+      ),
+    );
   }
 
   static bool convertTextFieldPrice(String text) {

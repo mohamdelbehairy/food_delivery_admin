@@ -14,17 +14,19 @@ class CustomButton extends StatelessWidget {
     return InkWell(
       onTap: buttonModel.onTap,
       child: Container(
-        height: 48,
-        width: double.infinity,
+        height: buttonModel.height ?? 48,
+        width: buttonModel.width ?? double.infinity,
         decoration: BoxDecoration(
-            color: AppColors.primaryColor,
+            border: Border.all(color: buttonModel.borderColor ?? Colors.white),
+            color: buttonModel.backgroundColor ?? AppColors.primaryColor,
             borderRadius: BorderRadius.circular(8)),
-        child: Center(
-          child: buttonModel.isLoading
-              ? const LoadingAnimationIndicator()
-              : Text(buttonModel.buttonName ?? "Sign in",
-                  style: Styles.semiBold16.copyWith(color: Colors.white)),
-        ),
+        child: buttonModel.child ??
+            Center(
+              child: buttonModel.isLoading
+                  ? const LoadingAnimationIndicator()
+                  : Text(buttonModel.buttonName ?? "Sign in",
+                      style: Styles.semiBold16.copyWith(color: Colors.white)),
+            ),
       ),
     );
   }
