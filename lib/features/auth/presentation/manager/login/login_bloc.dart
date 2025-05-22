@@ -4,13 +4,13 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_delivery_admin/core/utils/constants.dart';
-import 'package:food_delivery_admin/core/utils/helper.dart';
-import 'package:food_delivery_admin/features/user_data/data/repo/user_data_repo.dart';
 
 import '../../../../../core/model/text_field_model.dart';
+import '../../../../../core/utils/constants.dart';
+import '../../../../../core/utils/helper.dart';
+import '../../../../../core/utils/service/firebase_auth_service.dart';
 import '../../../../../core/utils/service/shared_pref_service.dart';
-import '../../../data/repo/auth_repo.dart';
+import '../../../../user_data/data/repo/user_data_repo.dart';
 import '../../views/widgets/email_suffix_icon.dart';
 import '../../views/widgets/login_password_suffix_icon.dart';
 
@@ -18,10 +18,11 @@ part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final AuthRepo _authRepo;
+  final FirebaseAuthService _firebaseAuthService;
   final UserDataRepo _userDataRepo;
   final SharedPrefService _sharedPrefService;
-  LoginBloc(this._authRepo, this._sharedPrefService, this._userDataRepo)
+  LoginBloc(
+      this._firebaseAuthService, this._sharedPrefService, this._userDataRepo)
       : super(LoginInitial()) {
     _listenToEmail();
     on<LoginEvent>((event, emit) async {
@@ -35,8 +36,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           formKey.currentState!.save();
           isLoading = true;
           emit(LoginLoading());
-          await _authRepo
-              .login(_email.text, _password.text)
+          await _firebaseAuthService
+              .loginWithEmail(_email.text, _password.text)
               .then((value) async {
             if (value != null) {
               final userData = await _userDataRepo.getFutureUserData();

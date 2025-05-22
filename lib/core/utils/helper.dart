@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../features/auth/data/repo/auth_repo_impl.dart';
 import '../../features/user_data/data/repo/user_data_repo_impl.dart';
+import 'service/firebase_auth_service.dart';
 import 'service/firebase_firestore_service.dart';
 import 'service/firebase_storage_service.dart';
 import 'service/image_picker_service.dart';
@@ -35,14 +35,14 @@ abstract class Helper {
         () => SharedPreferences.getInstance());
     await getIt.isReady<SharedPreferences>();
 
-    // auth repo impl
-    getIt.registerSingleton<AuthRepoImpl>(
-        AuthRepoImpl(getIt.get<FirebaseAuth>()));
     // user data impl
     getIt.registerSingleton<UserDataRepoImpl>(
         UserDataRepoImpl(getIt.get<FirebaseFirestore>()));
 
     // services
+    getIt.registerSingleton<FirebaseAuthService>(
+        FirebaseAuthService(getIt.get<FirebaseAuth>()));
+
     getIt.registerSingleton<FirebaseFirestoreService>(
         FirebaseFirestoreService(getIt.get<FirebaseFirestore>()));
 

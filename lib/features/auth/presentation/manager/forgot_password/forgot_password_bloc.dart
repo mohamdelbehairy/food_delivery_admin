@@ -3,9 +3,9 @@ import 'dart:developer';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_delivery_admin/features/auth/data/repo/auth_repo.dart';
 
 import '../../../../../core/model/text_field_model.dart';
+import '../../../../../core/utils/service/firebase_auth_service.dart';
 import '../../views/widgets/email_suffix_icon.dart';
 
 part 'forgot_password_event.dart';
@@ -13,8 +13,9 @@ part 'forgot_password_state.dart';
 
 class ForgotPasswordBloc
     extends Bloc<ForgotPasswordEvent, ForgotPasswordState> {
-  final AuthRepo _authRepo;
-  ForgotPasswordBloc(this._authRepo) : super(ForgotPasswordInitial()) {
+  final FirebaseAuthService _firebaseAuthService;
+  ForgotPasswordBloc(this._firebaseAuthService)
+      : super(ForgotPasswordInitial()) {
     _listenToEmail();
     on<ForgotPasswordEvent>((event, emit) async {
       if (event is ForgotPasswordButtonEvent) {
@@ -22,7 +23,7 @@ class ForgotPasswordBloc
           formKey.currentState!.save();
           isLoading = true;
           emit(ForgotpasswordLoading());
-          await _authRepo.forgotPassword(_email.text).then((value) {
+          await _firebaseAuthService.forgotPassword(_email.text).then((value) {
             isLoading = false;
             emit(ForgotpasswordSuccess());
           }).catchError((error) {

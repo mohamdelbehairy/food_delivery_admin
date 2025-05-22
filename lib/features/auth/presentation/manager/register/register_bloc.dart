@@ -6,9 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_delivery_admin/core/utils/constants.dart';
 
 import '../../../../../core/model/text_field_model.dart';
+import '../../../../../core/utils/service/firebase_auth_service.dart';
 import '../../../../user_data/data/model/user_data_model.dart';
 import '../../../../user_data/data/repo/user_data_repo.dart';
-import '../../../data/repo/auth_repo.dart';
 import '../../views/widgets/email_suffix_icon.dart';
 import '../../views/widgets/register_password_suffix_icon.dart';
 
@@ -16,9 +16,9 @@ part 'register_event.dart';
 part 'register_state.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
-  final AuthRepo _authRepo;
+  final FirebaseAuthService _firebaseAuthService;
   final UserDataRepo _userDataRepo;
-  RegisterBloc(this._authRepo, this._userDataRepo) : super(RegisterInitial()) {
+  RegisterBloc(this._firebaseAuthService, this._userDataRepo) : super(RegisterInitial()) {
     _listenToEmail();
     on<RegisterEvent>((event, emit) async {
       if (event is ChangeVisibilityEvent) {
@@ -32,8 +32,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           if (isPrivacy) {
             isLoading = true;
             emit(RegisterLoading());
-            await _authRepo
-                .register(_email.text, _password.text)
+            await _firebaseAuthService
+                .createUserWithEmail(_email.text, _password.text)
                 .then((value) async {
               if (value != null) {
                 await _userDataRepo.addUserData(UserDataModel(
