@@ -45,4 +45,25 @@ class ProductDataModel {
       'createdAt': createdAt
     };
   }
+
+  ProductDataModel copyWith({
+    String? productID,
+    String? productName,
+    String? productPrice,
+    String? productCategory,
+    String? productDescription,
+    String? ownerID,
+    List<String>? productImages,
+    DateTime? createdAt,
+  }) {
+    return ProductDataModel(
+        productID: productID ?? this.productID,
+        productName: productName ?? this.productName,
+        productPrice: productPrice ?? this.productPrice,
+        productCategory: productCategory ?? this.productCategory,
+        productDescription: productDescription ?? this.productDescription,
+        ownerID: ownerID ?? this.ownerID,
+        productImages: productImages ?? this.productImages,
+        createdAt: createdAt ?? this.createdAt);
+  }
 }

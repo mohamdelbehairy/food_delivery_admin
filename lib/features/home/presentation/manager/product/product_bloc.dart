@@ -23,37 +23,69 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   final FirebaseFirestoreService _firebaseFirestoreService;
   ProductBloc(this._firebaseFirestoreService) : super(ProductInitial()) {
     on<ProductEvent>((event, emit) async {
+      if (event is UpdateProductEvent) {
+        if (formKey.currentState!.validate()) {
+          formKey.currentState!.save();
+          if (checkTextFieldsChange(event.productDataModel)) {
+            isUpdateLoading = true;
+            emit(ProductLoading());
+            final date = event.productDataModel.copyWith(
+                productName: _productName!.text,
+                productPrice: _productPrice!.text,
+                productCategory: _productCategory!.text,
+                productDescription: _productDescription!.text);
+            await _firebaseFirestoreService
+                .updataData(
+                    collectionName: Constants.productCollection,
+                    docID: event.productDataModel.productID,
+                    data: date.toJson())
+                .then((value) {
+              isUpdateLoading = false;
+              emit(UpdateProductSuccess());
+            }).catchError((error) {
+              log("error from update product: $error");
+              isUpdateLoading = false;
+              emit(ProductFailure(error.code));
+            });
+          }
+        }
+      }
+
       if (event is CancelChangesEvent) {
-        if (_productName!.text != event.productDataModel.productName ||
-            _productPrice!.text != event.productDataModel.productPrice ||
-            _productCategory!.text != event.productDataModel.productCategory ||
-            _productDescription!.text !=
-                event.productDataModel.productDescription) {
+        if (checkTextFieldsChange(event.productDataModel)) {
           initTextFields(event.productDataModel);
           emit(CancleChanges());
         }
       }
 
       if (event is DeleteProductEvent) {
-        isLoading = true;
+        isDeleteLoading = true;
         emit(ProductLoading());
         await _firebaseFirestoreService
             .deleteData(
                 collectionName: Constants.productCollection,
                 docID: event.productID)
             .then((value) {
-          isLoading = false;
+          isDeleteLoading = false;
           emit(DeleteProductSuccess());
         }).catchError((error) {
           log("error from delete product: $error");
-          isLoading = false;
+          isDeleteLoading = false;
           emit(ProductFailure(error.code));
         });
       }
     });
   }
 
-  bool isLoading = false;
+  bool checkTextFieldsChange(ProductDataModel productDataModel) {
+    return _productName!.text != productDataModel.productName ||
+        _productPrice!.text != productDataModel.productPrice ||
+        _productCategory!.text != productDataModel.productCategory ||
+        _productDescription!.text != productDataModel.productDescription;
+  }
+
+  bool isUpdateLoading = false;
+  bool isDeleteLoading = false;
 
   TextEditingController? _productName;
   TextEditingController? _productPrice;
@@ -166,12 +198,15 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   List<ButtonModel> buttonItems(BuildContext context,
       {required ProductDataModel productDataModel}) {
     return [
-      ButtonModel(buttonName: "Update Product"),
+      ButtonModel(
+          isLoading: isUpdateLoading,
+          buttonName: "Update Product",
+          onTap: () => add(UpdateProductEvent(productDataModel))),
       ButtonModel(
           buttonName: "Cancel Changes",
           onTap: () => add(CancelChangesEvent(productDataModel))),
       ButtonModel(
-        isLoading: isLoading,
+        isLoading: isDeleteLoading,
         buttonName: "Delete Product",
         onTap: () => showDialog(
           context: context,

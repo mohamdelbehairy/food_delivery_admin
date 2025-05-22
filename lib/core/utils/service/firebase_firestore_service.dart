@@ -17,6 +17,13 @@ class FirebaseFirestoreService {
     _firebaseFirestore.collection(collectionName).snapshots().listen(onData);
   }
 
+  Future<void> updataData(
+      {required String collectionName,
+      required String docID,
+      required Map<Object, Object?> data}) async {
+    await _firebaseFirestore.collection(collectionName).doc(docID).update(data);
+  }
+
   Future<void> deleteData(
       {required String collectionName, required String docID}) async {
     await _firebaseFirestore.collection(collectionName).doc(docID).delete();

@@ -27,7 +27,10 @@ class ProductItem extends StatelessWidget {
           children: [
             ProductItemImage(imageUrl: productDataModel.productImages[0]),
             const SizedBox(height: 12),
-            Text(productDataModel.productName, style: Styles.medium16),
+            Text(productDataModel.productName, 
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Styles.medium16),
             const SizedBox(height: 12),
             const ProductItemRateAndDistanceSection(),
             const SizedBox(height: 12),

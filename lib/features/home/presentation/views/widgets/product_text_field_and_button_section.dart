@@ -18,6 +18,11 @@ class ProductTextFieldAndButtonSection extends StatelessWidget {
     final product = context.read<ProductBloc>();
     return BlocConsumer<ProductBloc, ProductState>(
       listener: (context, state) {
+        if (state is UpdateProductSuccess) {
+          Helper.customSnackBar(context,
+              message: "Product updated successfully");
+          Navigation.pop(context);
+        }
         if (state is CancleChanges) {
           Helper.customSnackBar(context, message: "Changes cancelled");
         }
@@ -28,18 +33,21 @@ class ProductTextFieldAndButtonSection extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        return Column(
-          children: [
-            TextFieldListView(list: product.textFieldItems(context)),
-            const SizedBox(height: 32),
-            Column(
-              spacing: 8,
-              children: product
-                  .buttonItems(context, productDataModel: productDataModel)
-                  .map((e) => CustomButton(buttonModel: e))
-                  .toList(),
-            ),
-          ],
+        return Form(
+          key: product.formKey,
+          child: Column(
+            children: [
+              TextFieldListView(list: product.textFieldItems(context)),
+              const SizedBox(height: 32),
+              Column(
+                spacing: 8,
+                children: product
+                    .buttonItems(context, productDataModel: productDataModel)
+                    .map((e) => CustomButton(buttonModel: e))
+                    .toList(),
+              ),
+            ],
+          ),
         );
       },
     );
