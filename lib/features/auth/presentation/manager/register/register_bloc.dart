@@ -10,7 +10,7 @@ import 'package:food_delivery_admin/core/utils/helper.dart';
 import '../../../../../core/model/text_field_model.dart';
 import '../../../../../core/utils/service/firebase_auth_service.dart';
 import '../../../../../core/utils/service/firebase_firestore_service.dart';
-import '../../../../user_data/data/model/user_data_model.dart';
+import '../../../../profile/data/model/user_data_model.dart';
 import '../../views/widgets/email_suffix_icon.dart';
 import '../../views/widgets/register_password_suffix_icon.dart';
 

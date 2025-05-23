@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/utils/assets.dart';
 import 'main_home_header_locaton.dart';
-import 'main_home_header_search_and_notification.dart';
+import 'main_home_header_notification_and_menu.dart';
 import 'main_home_text.dart';
 
 class MainHomeViewHeader extends StatelessWidget {
@@ -14,7 +14,7 @@ class MainHomeViewHeader extends StatelessWidget {
       children: [
         Image.asset(Assets.imagesHomeHeader),
         const MainHomeHeaderLocation(),
-        const MainHomeHeaderSearchAndNotification(),
+        const MainHomeHeaderNotificationAndMenu(),
         const MainHomeText(),
       ],
     );

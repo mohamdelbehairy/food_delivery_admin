@@ -9,7 +9,7 @@ import '../../../../../core/utils/constants.dart';
 import '../../../../../core/utils/service/firebase_auth_service.dart';
 import '../../../../../core/utils/service/firebase_firestore_service.dart';
 import '../../../../../core/utils/service/shared_pref_service.dart';
-import '../../../../user_data/data/model/user_data_model.dart';
+import '../../../../profile/data/model/user_data_model.dart';
 import '../../views/widgets/email_suffix_icon.dart';
 import '../../views/widgets/login_password_suffix_icon.dart';
 

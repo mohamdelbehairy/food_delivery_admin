@@ -11,3 +11,5 @@ final class ChangeCategory extends HomeState {}
 final class ChangeCategoryProduct extends HomeState {}
 
 final class GetProductDataSuccess extends HomeState {}
+
+final class GetUserDataSuccess extends HomeState {}

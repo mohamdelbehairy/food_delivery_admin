@@ -26,6 +26,10 @@ class Assets {
   /// assets/images/chat_background.png
   static const String imagesChatBackground = "assets/images/chat_background.png";
 
+  /// Assets for imagesDefaultProfile
+  /// assets/images/default_profile.jpg
+  static const String imagesDefaultProfile = "assets/images/default_profile.jpg";
+
   /// Assets for imagesDone
   /// assets/images/done.svg
   static const String imagesDone = "assets/images/done.svg";
@@ -65,10 +69,6 @@ class Assets {
   /// Assets for imagesR
   /// assets/images/R.png
   static const String imagesR = "assets/images/R.png";
-
-  /// Assets for imagesSearch
-  /// assets/images/search.svg
-  static const String imagesSearch = "assets/images/search.svg";
 
   /// Assets for imagesSend
   /// assets/images/send.svg

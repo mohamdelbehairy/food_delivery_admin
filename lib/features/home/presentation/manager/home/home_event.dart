@@ -24,3 +24,9 @@ final class GetProductDateEvent extends HomeEvent {
 
   GetProductDateEvent(this.productList);
 }
+
+final class GetUserDataEvent extends HomeEvent {
+  final UserDataModel userData;
+
+  GetUserDataEvent(this.userData);
+}

@@ -1,13 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_delivery_admin/core/utils/service/firebase_firestore_service.dart';
+import 'package:food_delivery_admin/core/utils/helper.dart';
 
 import '../../../../../core/utils/assets.dart';
 import '../../../../../core/utils/constants.dart';
+import '../../../../../core/utils/service/firebase_firestore_service.dart';
 import '../../../../add_product/data/model/product_bottom_sheet_item_model.dart';
 import '../../../../add_product/presentation/views/add_product_view.dart';
 import '../../../../chat/presentation/views/chat_view.dart';
 import '../../../../product_data/data/model/product_data_model.dart';
+import '../../../../profile/data/model/user_data_model.dart';
 import '../../../data/model/bottom_nav_model.dart';
 import '../../../data/model/category_item_model.dart';
 import '../../views/main_home_view.dart';
@@ -36,12 +39,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         categoryProductIndex = event.index;
         emit(ChangeCategoryProduct());
       }
-    });
 
-    on<GetProductDateEvent>((event, emit) {
-      allProductsList = event.productList;
-      productsList = _getProducts();
-      emit(GetProductDataSuccess());
+      if (event is GetProductDateEvent) {
+        allProductsList = event.productList;
+        productsList = _getProducts();
+        emit(GetProductDataSuccess());
+      }
+
+      if (event is GetUserDataEvent) {
+        userData = event.userData;
+        emit(GetUserDataSuccess());
+      }
     });
 
     _firebaseFirestoreService.getData(
@@ -71,6 +79,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             }
           }
           add(GetProductDateEvent(allProductsList));
+        });
+
+    _firebaseFirestoreService.getData(
+        collectionName: Constants.userCollection,
+        onData: (snapshot) {
+          if (snapshot.docs.isEmpty) return;
+          final List<UserDataModel> users = snapshot.docs
+              .map((e) => UserDataModel.fromJson(e.data()))
+              .toList();
+
+          final user = users.firstWhere((e) =>
+              e.userID == Helper.getIt.get<FirebaseAuth>().currentUser!.uid);
+
+          add(GetUserDataEvent(user));
         });
   }
   List<ProductDataModel> _getProducts() {
@@ -120,4 +142,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       ProductBottomSheetItemModel(image: Assets.imagesPizza, title: "Pizza"),
     ];
   }
+
+  GlobalKey<ScaffoldState> homeKey = GlobalKey<ScaffoldState>();
+  UserDataModel? userData;
 }

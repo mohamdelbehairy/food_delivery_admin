@@ -13,7 +13,7 @@ class AlertDialogTitle extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Spacer(),
-        Text(title ?? "Sign Out", style: Styles.semiBold22),
+        Text(title ?? "Log Out", style: Styles.semiBold22),
         const Spacer(),
         GestureDetector(
           onTap: () => Navigation.pop(context),

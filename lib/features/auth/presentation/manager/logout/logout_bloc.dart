@@ -16,14 +16,20 @@ class LogoutBloc extends Bloc<LogoutEvent, LogoutState> {
       : super(LogoutInitial()) {
     on<LogoutEvent>((event, emit) async {
       if (event is LogoutButtonEvent) {
+        isLoading = true;
+        emit(LogoutLoading());
+        await Future.delayed(const Duration(seconds: 2));
         await _firebaseAuthService.logout().then((value) async {
           await _sharedPrefService.remove(Constants.userID);
+          isLoading = false;
           emit(LogoutSuccess());
         }).catchError((error) {
           log("error from logout: $error");
+          isLoading = false;
           emit(LogoutFailure(error.code));
         });
       }
     });
   }
+  bool isLoading = false;
 }
