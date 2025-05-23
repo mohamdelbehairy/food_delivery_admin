@@ -14,20 +14,23 @@ class ProductTextFieldAndButtonSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = context.read<ProductBloc>();
-    return Form(
-      key: product.formKey,
-      child: Column(
-        children: [
-          TextFieldListView(list: product.textFieldItems(context)),
-          const SizedBox(height: 32),
-          Column(
-            spacing: 8,
-            children: product
-                .buttonItems(context, productDataModel: productDataModel)
-                .map((e) => CustomButton(buttonModel: e))
-                .toList(),
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Form(
+        key: product.formKey,
+        child: Column(
+          children: [
+            TextFieldListView(list: product.textFieldItems(context)),
+            const SizedBox(height: 20),
+            Column(
+              spacing: 8,
+              children: product
+                  .buttonItems(context, productDataModel: productDataModel)
+                  .map((e) => CustomButton(buttonModel: e))
+                  .toList(),
+            ),
+          ],
+        ),
       ),
     );
   }

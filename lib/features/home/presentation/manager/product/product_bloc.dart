@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,8 @@ import '../../../../../core/utils/constants.dart';
 import '../../../../../core/utils/helper.dart';
 import '../../../../../core/utils/navigation.dart';
 import '../../../../../core/utils/service/firebase_firestore_service.dart';
+import '../../../../../core/utils/service/firebase_storage_service.dart';
+import '../../../../../core/utils/service/image_picker_service.dart';
 import '../../../../../core/widgets/custom_alert_dialog.dart';
 import '../../../../add_product/presentation/views/widgets/product_category_bottom_sheet.dart';
 import '../../../../add_product/presentation/views/widgets/product_suffix_icon.dart';
@@ -20,8 +23,13 @@ part 'product_event.dart';
 part 'product_state.dart';
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
+  final ImagePickerService _imagePickerService;
   final FirebaseFirestoreService _firebaseFirestoreService;
-  ProductBloc(this._firebaseFirestoreService) : super(ProductInitial()) {
+  final FirebaseStorageService _firebaseStorageService;
+
+  ProductBloc(this._imagePickerService, this._firebaseFirestoreService,
+      this._firebaseStorageService)
+      : super(ProductInitial()) {
     on<ProductEvent>((event, emit) async {
       if (event is SelectProductImageEvent) {
         if (selectProductImagesIndex.contains(event.index)) {
@@ -36,12 +44,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         if (formKey.currentState!.validate()) {
           formKey.currentState!.save();
 
-          if (selectProductImagesIndex.length ==
-              event.productDataModel.productImages.length) {
-            Helper.customSnackBar(event.context,
-                message: "You must keep at least one image.");
-            return;
-          }
           final updatedImages = [...event.productDataModel.productImages];
           if (selectProductImagesIndex.isNotEmpty) {
             selectProductImagesIndex.sort((a, b) => b.compareTo(a));
@@ -50,10 +52,34 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
             }
           }
 
+          if (selectProductImagesIndex.length ==
+                  event.productDataModel.productImages.length &&
+              images == null) {
+            Helper.customSnackBar(event.context,
+                message: "You must keep at least one image.");
+            return;
+          }
+
+          if (images != null && updatedImages.length + images!.length > 5) {
+            Helper.customSnackBar(event.context,
+                message: "Your prouct can't have more than 5 images.");
+            return;
+          }
+
+          List<String> imagesUrls = [];
+          if (images != null && updatedImages.length + images!.length <= 5) {
+            _isUpdateLoading = true;
+            emit(ProductLoading());
+            imagesUrls = await _firebaseStorageService.uploadImages(images!);
+            updatedImages.addAll(imagesUrls);
+          }
+
           final hasImagesChanged = selectProductImagesIndex.isNotEmpty;
           final hasTextChanged = _checkTextFieldsChange(event.productDataModel);
+          final hasPickImages = updatedImages.length !=
+              event.productDataModel.productImages.length;
 
-          if (hasImagesChanged || hasTextChanged) {
+          if (hasImagesChanged || hasTextChanged || hasPickImages) {
             final updatedProduct = event.productDataModel.copyWith(
                 productImages: updatedImages,
                 productName: _productName!.text,
@@ -65,6 +91,16 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           }
         }
       }
+      if (event is PickImageEvent) {
+        images = await _imagePickerService.pickImage();
+        if (images == null) return;
+        emit(PickImageSuccess());
+      }
+      if (event is RemovePickImageEvent) {
+        if (images == null) return;
+        images!.removeAt(event.index);
+        emit(PickImageSuccess());
+      }
 
       if (event is CancelChangesEvent) {
         if (_checkTextFieldsChange(event.productDataModel)) {
@@ -72,6 +108,10 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         }
         if (selectProductImagesIndex.isNotEmpty) {
           selectProductImagesIndex.clear();
+        }
+        if (images != null) {
+          images?.clear();
+          images = null;
         }
         emit(CancleChanges());
       }
@@ -121,6 +161,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         _productDescription!.text != productDataModel.productDescription;
   }
 
+  List<File>? images;
   bool _isUpdateLoading = false;
   bool _isDeleteLoading = false;
 
@@ -144,11 +185,12 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
   List<TextFieldModel> textFieldItems(BuildContext context) {
     return [
-      // TextFieldModel(
-      //     lable: "Product Images",
-      //     hintText: "Select Product Images here...",
-      //     readOnly: true,
-      //     suffixIcon: const ProductImagesSuffixIcon()),
+      TextFieldModel(
+          lable: "Product Images",
+          hintText: "Select Product Images here...",
+          readOnly: true,
+          suffixIcon: ProductSuffixIcon(
+              isProductImage: true, onTap: () => add(PickImageEvent()))),
       TextFieldModel(
           lable: "Product Name",
           hintText: "Type something longer here...",

@@ -16,6 +16,7 @@ class ProductViewImages extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = context.read<ProductBloc>();
     return ImagesHorizontalListView(
+      horizontal: 24,
       children: productDataModel.productImages
           .asMap()
           .entries

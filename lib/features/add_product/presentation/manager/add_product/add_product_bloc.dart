@@ -16,7 +16,6 @@ import '../../../../../core/utils/service/image_picker_service.dart';
 import '../../../../home/presentation/manager/home/home_bloc.dart';
 import '../../../../product_data/data/model/product_data_model.dart';
 import '../../views/widgets/product_category_bottom_sheet.dart';
-import '../../views/widgets/product_images_suffix_icon.dart';
 import '../../views/widgets/product_suffix_icon.dart';
 
 part 'add_product_event.dart';
@@ -128,7 +127,8 @@ class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
           lable: "Product Images",
           hintText: "Select Product Images here...",
           readOnly: true,
-          suffixIcon: const ProductImagesSuffixIcon()),
+          suffixIcon: ProductSuffixIcon(
+              isProductImage: true, onTap: () => add(PickImageEvent()))),
       TextFieldModel(
           lable: "Product Name",
           hintText: "Type something longer here...",

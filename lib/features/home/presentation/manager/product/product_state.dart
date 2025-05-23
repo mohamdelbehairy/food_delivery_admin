@@ -6,6 +6,8 @@ final class ProductInitial extends ProductState {}
 
 final class ProductLoading extends ProductState {}
 
+final class PickImageSuccess extends ProductState {}
+
 final class UpdateProductSuccess extends ProductState {}
 
 final class CancleChanges extends ProductState {}
