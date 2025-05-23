@@ -23,69 +23,106 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   final FirebaseFirestoreService _firebaseFirestoreService;
   ProductBloc(this._firebaseFirestoreService) : super(ProductInitial()) {
     on<ProductEvent>((event, emit) async {
+      if (event is SelectProductImageEvent) {
+        if (selectProductImagesIndex.contains(event.index)) {
+          selectProductImagesIndex.remove(event.index);
+          emit(SelectProductImageState());
+        } else {
+          selectProductImagesIndex.add(event.index);
+          emit(SelectProductImageState());
+        }
+      }
       if (event is UpdateProductEvent) {
         if (formKey.currentState!.validate()) {
           formKey.currentState!.save();
-          if (checkTextFieldsChange(event.productDataModel)) {
-            isUpdateLoading = true;
-            emit(ProductLoading());
-            final date = event.productDataModel.copyWith(
+
+          if (selectProductImagesIndex.length ==
+              event.productDataModel.productImages.length) {
+            Helper.customSnackBar(event.context,
+                message: "You must keep at least one image.");
+            return;
+          }
+          final updatedImages = [...event.productDataModel.productImages];
+          if (selectProductImagesIndex.isNotEmpty) {
+            selectProductImagesIndex.sort((a, b) => b.compareTo(a));
+            for (final index in selectProductImagesIndex) {
+              updatedImages.removeAt(index);
+            }
+          }
+
+          final hasImagesChanged = selectProductImagesIndex.isNotEmpty;
+          final hasTextChanged = _checkTextFieldsChange(event.productDataModel);
+
+          if (hasImagesChanged || hasTextChanged) {
+            final updatedProduct = event.productDataModel.copyWith(
+                productImages: updatedImages,
                 productName: _productName!.text,
                 productPrice: _productPrice!.text,
                 productCategory: _productCategory!.text,
                 productDescription: _productDescription!.text);
-            await _firebaseFirestoreService
-                .updataData(
-                    collectionName: Constants.productCollection,
-                    docID: event.productDataModel.productID,
-                    data: date.toJson())
-                .then((value) {
-              isUpdateLoading = false;
-              emit(UpdateProductSuccess());
-            }).catchError((error) {
-              log("error from update product: $error");
-              isUpdateLoading = false;
-              emit(ProductFailure(error.code));
-            });
+
+            await _updateProduct(updatedProduct, emit);
           }
         }
       }
 
       if (event is CancelChangesEvent) {
-        if (checkTextFieldsChange(event.productDataModel)) {
+        if (_checkTextFieldsChange(event.productDataModel)) {
           initTextFields(event.productDataModel);
-          emit(CancleChanges());
         }
+        if (selectProductImagesIndex.isNotEmpty) {
+          selectProductImagesIndex.clear();
+        }
+        emit(CancleChanges());
       }
 
       if (event is DeleteProductEvent) {
-        isDeleteLoading = true;
+        _isDeleteLoading = true;
         emit(ProductLoading());
         await _firebaseFirestoreService
             .deleteData(
                 collectionName: Constants.productCollection,
                 docID: event.productID)
             .then((value) {
-          isDeleteLoading = false;
+          _isDeleteLoading = false;
           emit(DeleteProductSuccess());
         }).catchError((error) {
           log("error from delete product: $error");
-          isDeleteLoading = false;
+          _isDeleteLoading = false;
           emit(ProductFailure(error.code));
         });
       }
     });
   }
 
-  bool checkTextFieldsChange(ProductDataModel productDataModel) {
+  Future<void> _updateProduct(
+      ProductDataModel date, Emitter<ProductState> emit) async {
+    _isUpdateLoading = true;
+    emit(ProductLoading());
+    await _firebaseFirestoreService
+        .updataData(
+            collectionName: Constants.productCollection,
+            docID: date.productID,
+            data: date.toJson())
+        .then((value) {
+      _isUpdateLoading = false;
+      emit(UpdateProductSuccess());
+    }).catchError((error) {
+      log("error from update product: $error");
+      _isUpdateLoading = false;
+      emit(ProductFailure(error.code));
+    });
+  }
+
+  bool _checkTextFieldsChange(ProductDataModel productDataModel) {
     return _productName!.text != productDataModel.productName ||
         _productPrice!.text != productDataModel.productPrice ||
         _productCategory!.text != productDataModel.productCategory ||
         _productDescription!.text != productDataModel.productDescription;
   }
 
-  bool isUpdateLoading = false;
-  bool isDeleteLoading = false;
+  bool _isUpdateLoading = false;
+  bool _isDeleteLoading = false;
 
   TextEditingController? _productName;
   TextEditingController? _productPrice;
@@ -93,6 +130,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   TextEditingController? _productDescription;
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  List<int> selectProductImagesIndex = [];
 
   void initTextFields(ProductDataModel productDataModel) {
     _productName = TextEditingController(text: productDataModel.productName);
@@ -199,14 +238,15 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       {required ProductDataModel productDataModel}) {
     return [
       ButtonModel(
-          isLoading: isUpdateLoading,
+          isLoading: _isUpdateLoading,
           buttonName: "Update Product",
-          onTap: () => add(UpdateProductEvent(productDataModel))),
+          onTap: () => add(
+              UpdateProductEvent(context, productDataModel: productDataModel))),
       ButtonModel(
           buttonName: "Cancel Changes",
           onTap: () => add(CancelChangesEvent(productDataModel))),
       ButtonModel(
-        isLoading: isDeleteLoading,
+        isLoading: _isDeleteLoading,
         buttonName: "Delete Product",
         onTap: () => showDialog(
           context: context,

@@ -16,3 +16,5 @@ final class ProductFailure extends ProductState {
   final String errorMessage;
   ProductFailure(this.errorMessage);
 }
+
+final class SelectProductImageState extends ProductState {}

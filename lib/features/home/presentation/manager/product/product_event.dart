@@ -4,7 +4,8 @@ sealed class ProductEvent {}
 
 final class UpdateProductEvent extends ProductEvent {
   final ProductDataModel productDataModel;
-  UpdateProductEvent(this.productDataModel);
+  final BuildContext context;
+  UpdateProductEvent(this.context, {required this.productDataModel});
 }
 
 final class CancelChangesEvent extends ProductEvent {
@@ -16,4 +17,9 @@ final class CancelChangesEvent extends ProductEvent {
 final class DeleteProductEvent extends ProductEvent {
   final String productID;
   DeleteProductEvent(this.productID);
+}
+
+final class SelectProductImageEvent extends ProductEvent {
+  final int index;
+  SelectProductImageEvent({required this.index});
 }

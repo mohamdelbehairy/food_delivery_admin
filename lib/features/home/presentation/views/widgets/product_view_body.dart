@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../product_data/data/model/product_data_model.dart';
+import '../../manager/product/product_bloc.dart';
 import 'product_text_field_and_button_section.dart';
+import 'product_view_bloc_listener.dart';
 import 'product_view_images.dart';
 
 class ProductViewBody extends StatelessWidget {
@@ -10,17 +13,25 @@ class ProductViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 8),
-          ProductViewImages(productDataModel: productDataModel),
-          const SizedBox(height: 24),
-          ProductTextFieldAndButtonSection(productDataModel: productDataModel),
-        ],
-      ),
+    return BlocConsumer<ProductBloc, ProductState>(
+      listener: (context, state) {
+        productViewBlocListener(state, context);
+      },
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 8),
+              ProductViewImages(productDataModel: productDataModel),
+              const SizedBox(height: 24),
+              ProductTextFieldAndButtonSection(
+                  productDataModel: productDataModel),
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../product_data/data/model/product_data_model.dart';
 import '../../manager/home/home_bloc.dart';
+import 'no_products_widget.dart';
 import 'product_item.dart';
 
 class MainHomeViewGridView extends StatelessWidget {
@@ -15,6 +16,9 @@ class MainHomeViewGridView extends StatelessWidget {
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
+        if (products.productsList.isEmpty || products.allProductsList.isEmpty) {
+          return const NoProductsWidget();
+        }
         return Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
