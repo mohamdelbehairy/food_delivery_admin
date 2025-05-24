@@ -15,6 +15,7 @@ abstract class Styles {
       fontWeight: FontWeight.bold,
       fontFamily: "PlusJakartaSans",
       color: AppColors.primaryColor);
+
   // semi bold
   static const semiBold16 = TextStyle(
       fontSize: 16,
