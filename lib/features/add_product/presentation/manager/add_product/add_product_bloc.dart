@@ -91,7 +91,7 @@ class AddProductBloc extends Bloc<AddProductEvent, AddProductState> {
       }
 
       if (event is PickImageEvent) {
-        images = await _imagePickerService.pickImage();
+        images = await _imagePickerService.pickImages();
         if (images == null) return;
         emit(PickImageSuccess());
       }

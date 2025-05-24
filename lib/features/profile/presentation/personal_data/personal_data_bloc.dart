@@ -1,17 +1,49 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_delivery_admin/core/model/button_model.dart';
-import 'package:food_delivery_admin/core/model/text_field_model.dart';
 
+import '../../../../core/model/button_model.dart';
+import '../../../../core/model/text_field_model.dart';
+import '../../../../core/utils/service/image_picker_service.dart';
 import '../../data/model/user_data_model.dart';
 
 part 'personal_data_event.dart';
 part 'personal_data_state.dart';
 
 class PersonalDataBloc extends Bloc<PersonalDataEvent, PersonalDataState> {
-  PersonalDataBloc() : super(PersonalDataInitial()) {
-    on<PersonalDataEvent>((event, emit) {});
+  final ImagePickerService _imagePickerService;
+  PersonalDataBloc(this._imagePickerService) : super(PersonalDataInitial()) {
+    on<PersonalDataEvent>((event, emit) async {
+      if (event is PickImageEvent) {
+        await _imagePickerService.pickImage().then((value) {
+          if (value != null) {
+            imageFile = value;
+            emit(PickImageSuccess());
+          }
+        });
+      }
+
+      if (event is CancleChangeEvent) {
+        final hasImageChanges = imageFile != null;
+        final hasTextFieldChanges = _fullName!.text != event.userData.userName;
+
+        if (hasImageChanges || hasTextFieldChanges) {
+          if (hasImageChanges) {
+            imageFile = null;
+          }
+
+          if (hasTextFieldChanges) {
+            _fullName?.text = event.userData.userName;
+          }
+
+          emit(CancleChanges());
+        }
+      }
+    });
   }
+
+  File? imageFile;
 
   TextEditingController? _fullName;
   TextEditingController? _userRole;
@@ -42,14 +74,12 @@ class PersonalDataBloc extends Bloc<PersonalDataEvent, PersonalDataState> {
     ];
   }
 
-  List<ButtonModel> buttonItems() {
+  List<ButtonModel> buttonItems(UserDataModel userData) {
     return [
+      ButtonModel(buttonName: "Update Changes"),
       ButtonModel(
-        buttonName: "Update Changes",
-      ),
-      ButtonModel(
-        buttonName: "Cancel Changes",
-      ),
+          buttonName: "Cancel Changes",
+          onTap: () => add(CancleChangeEvent(userData: userData))),
     ];
   }
 

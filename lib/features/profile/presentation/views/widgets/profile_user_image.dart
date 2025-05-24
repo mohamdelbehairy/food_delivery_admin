@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../../../../core/model/cached_image_model.dart';
@@ -6,9 +8,10 @@ import '../../../../../core/utils/assets.dart';
 import '../../../../../core/widgets/custom_cached_image.dart';
 
 class ProfileUserImage extends StatelessWidget {
-  const ProfileUserImage({super.key, this.imageUrl});
+  const ProfileUserImage({super.key, this.imageUrl, this.imageFile});
 
   final String? imageUrl;
+  final File? imageFile;
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +25,13 @@ class ProfileUserImage extends StatelessWidget {
           borderRadius: BorderRadius.circular(100)),
       child: ClipRRect(
           borderRadius: BorderRadius.circular(100),
-          child: imageUrl == null
-              ? Image.asset(Assets.imagesDefaultProfile, fit: BoxFit.fill)
-              : CustomCachedImage(
-                  cachedImageModel: CachedImageModel(
-                      // borderRadius: 100,
-                      fit: BoxFit.cover,
-                      imageUrl: imageUrl!))),
+          child: imageFile != null
+              ? Image.file(imageFile!, fit: BoxFit.cover)
+              : imageUrl == null
+                  ? Image.asset(Assets.imagesDefaultProfile, fit: BoxFit.fill)
+                  : CustomCachedImage(
+                      cachedImageModel: CachedImageModel(
+                          fit: BoxFit.cover, imageUrl: imageUrl!))),
     );
   }
 }

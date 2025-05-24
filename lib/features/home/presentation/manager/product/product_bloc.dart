@@ -92,7 +92,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         }
       }
       if (event is PickImageEvent) {
-        images = await _imagePickerService.pickImage();
+        images = await _imagePickerService.pickImages();
         if (images == null) return;
         emit(PickImageSuccess());
       }
@@ -103,17 +103,23 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       }
 
       if (event is CancelChangesEvent) {
-        if (_checkTextFieldsChange(event.productDataModel)) {
-          initTextFields(event.productDataModel);
+        final hasTextChanges = _checkTextFieldsChange(event.productDataModel);
+        final hasSelectedImages = selectProductImagesIndex.isNotEmpty;
+        final hasImages = images != null && images!.isNotEmpty;
+
+        if (hasTextChanges || hasSelectedImages || hasImages) {
+          if (hasTextChanges) {
+            initTextFields(event.productDataModel);
+          }
+          if (hasSelectedImages) {
+            selectProductImagesIndex.clear();
+          }
+          if (hasImages) {
+            images?.clear();
+            images = null;
+          }
+          emit(CancleChanges());
         }
-        if (selectProductImagesIndex.isNotEmpty) {
-          selectProductImagesIndex.clear();
-        }
-        if (images != null) {
-          images?.clear();
-          images = null;
-        }
-        emit(CancleChanges());
       }
 
       if (event is DeleteProductEvent) {
