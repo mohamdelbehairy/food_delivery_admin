@@ -27,6 +27,7 @@ class LogoutBloc extends Bloc<LogoutEvent, LogoutState> {
           log("error from logout: $error");
           isLoading = false;
           emit(LogoutFailure(error.code));
+          
         });
       }
     });

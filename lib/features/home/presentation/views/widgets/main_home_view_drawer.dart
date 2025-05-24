@@ -10,6 +10,7 @@ import '../../../../profile/presentation/views/widgets/profile_user_image.dart';
 import '../../../../profile/presentation/views/widgets/profile_user_name_and_email.dart';
 import '../../manager/home/home_bloc.dart';
 import 'main_home_drawer_button.dart';
+import 'main_home_drawer_list_tile.dart';
 
 class MainHomeViewDrawer extends StatelessWidget {
   const MainHomeViewDrawer({super.key});
@@ -28,7 +29,6 @@ class MainHomeViewDrawer extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 8),
                     Align(
@@ -42,7 +42,9 @@ class MainHomeViewDrawer extends StatelessWidget {
                     ProfileUserNameAndEmail(
                         userName: home.userData!.userName,
                         userEmail: home.userData!.userEmail),
-                    Spacer(),
+                    const SizedBox(height: 32),
+                    MainHomeDrawerListTile(userDataModel: home.userData!),
+                    const Spacer(),
                     const MainHomeDrawerButton(),
                     const SizedBox(height: 24)
                   ],

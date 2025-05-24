@@ -62,6 +62,10 @@ class Assets {
   /// assets/images/notification.svg
   static const String imagesNotification = "assets/images/notification.svg";
 
+  /// Assets for imagesPersonalData
+  /// assets/images/personal_data.svg
+  static const String imagesPersonalData = "assets/images/personal_data.svg";
+
   /// Assets for imagesPizza
   /// assets/images/pizza.png
   static const String imagesPizza = "assets/images/pizza.png";

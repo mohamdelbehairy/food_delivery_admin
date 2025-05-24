@@ -7,7 +7,7 @@ import '../../../../core/utils/service/firebase_firestore_service.dart';
 import '../../../../core/utils/service/image_picker_service.dart';
 import '../../../product_data/data/model/product_data_model.dart';
 import '../manager/product/product_bloc.dart';
-import 'widgets/product_app_bar.dart';
+import '../../../../core/widgets/custom_app_bar.dart';
 import 'widgets/product_view_body.dart';
 
 class ProductView extends StatelessWidget {
@@ -24,7 +24,7 @@ class ProductView extends StatelessWidget {
         ..initTextFields(productDataModel),
       child: Scaffold(
           backgroundColor: Colors.white,
-          appBar: productAppBar(context),
+          appBar: customAppBar(context),
           body: ProductViewBody(productDataModel: productDataModel)),
     );
   }
