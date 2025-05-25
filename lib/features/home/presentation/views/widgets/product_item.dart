@@ -34,7 +34,7 @@ class ProductItem extends StatelessWidget {
             const SizedBox(height: 12),
             const ProductItemRateAndDistanceSection(),
             const SizedBox(height: 12),
-            Text("\$ ${productDataModel.productPrice}", style: Styles.bold16),
+            Text("EGP ${productDataModel.productPrice}", style: Styles.bold16),
           ],
         ),
       ),
